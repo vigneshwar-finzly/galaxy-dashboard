@@ -99,3 +99,4 @@ logs/
 ## Node.js
 ##############################
 package-lock.json
+.env
