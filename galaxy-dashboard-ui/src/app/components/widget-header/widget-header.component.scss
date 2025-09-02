@@ -1,0 +1,26 @@
+// Widget header specific styles
+.widget-header {
+  // Add any specific styling if needed
+}
+
+// Loading animation for refresh button
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.fa-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Hover effects
+button {
+  &:hover {
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+

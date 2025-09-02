@@ -1,0 +1,888 @@
+// Modern Create Dashboard Component Styles - Theme Adaptive
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Component uses CSS variables from global theme system
+// Theme-adaptive utility classes for dynamic theming
+
+// Background utilities
+.theme-background {
+  background-color: var(--color-background);
+}
+
+.theme-surface {
+  background-color: var(--color-surface);
+}
+
+.theme-surface-hover {
+  background-color: var(--color-surface-hover);
+}
+
+.theme-surface-backdrop {
+  background-color: var(--color-surface);
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+// Text utilities
+.theme-text-primary {
+  color: var(--color-text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--color-text-secondary);
+}
+
+// Border utilities
+.theme-border {
+  border-color: var(--color-border-light);
+}
+
+.theme-border-medium {
+  border-color: var(--color-border-medium);
+}
+
+// Primary color utilities
+.theme-primary {
+  color: var(--color-primary);
+}
+
+.theme-primary-bg {
+  background-color: var(--color-primary);
+}
+
+.theme-primary-gradient {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.theme-success-gradient {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.theme-warning-gradient {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+// Border utilities
+.theme-border-separator {
+  background-color: var(--color-border-light);
+}
+
+// Tooltip utilities
+.theme-tooltip {
+  background: var(--color-text-primary);
+  color: var(--color-surface);
+  font-size: 0.75rem;
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+}
+
+.theme-tooltip-arrow {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid var(--color-text-primary);
+}
+
+// Button utilities
+.theme-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 24px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: var(--transition-normal);
+  border: none;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--color-border-medium);
+  }
+}
+
+.theme-btn-secondary {
+  padding: 8px 16px;
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: var(--transition-normal);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-border-light);
+    border-color: var(--color-border-medium);
+    transform: translateY(-1px);
+  }
+}
+
+// Input utilities
+.theme-input {
+  background: var(--color-surface-hover);
+  border: 1px solid #e5e7eb;
+  color: var(--color-text-primary);
+
+  &:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  &:hover {
+    border-color: #94a3b8;
+  }
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
+}
+
+// Base Styles
+.font-inter {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+// Smooth transitions
+* {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Exclude form inputs from global transitions to prevent interference
+input, textarea, select, button {
+  transition: none;
+}
+
+// Form Inputs - Theme Adaptive
+input, textarea {
+  @apply outline-none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  cursor: text;
+  pointer-events: auto;
+  user-select: text;
+  background: var(--color-surface-hover);
+  border: 1px solid var(--color-border-light);
+
+  &:focus {
+    @apply outline-none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  &:hover {
+    border-color: var(--color-border-medium);
+  }
+}
+
+// Sharing Options - Theme Adaptive
+.sharing-option {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface);
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: var(--color-border-medium);
+    box-shadow: var(--shadow-sm);
+  }
+
+  &.selected {
+    border-color: #6366f1;
+    background: #eef2ff;
+    box-shadow: var(--shadow-sm);
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  // Compact version for better space utilization
+  &.compact {
+    padding: 10px;
+    border-radius: var(--radius-md);
+    min-height: 40px;
+
+    &:hover {
+      transform: translateY(-0.5px);
+    }
+
+    // For horizontal layout, center the content
+    .sharing-content {
+      text-align: center;
+    }
+
+    // Responsive adjustments for small screens
+    @media (max-width: 640px) {
+      padding: 8px;
+      min-height: 36px;
+
+      .sharing-content h4 {
+        font-size: 0.75rem;
+      }
+    }
+  }
+}
+
+.sharing-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  margin-right: 12px;
+  transition: var(--transition-normal);
+
+  // Compact version
+  .sharing-option.compact & {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    border-radius: var(--radius-sm);
+
+    // For horizontal layout, adjust margin for centered layout
+    @media (min-width: 641px) {
+      margin-right: 4px;
+    }
+  }
+}
+
+.sharing-option.selected .sharing-icon {
+  background: #ddd6fe;
+  color: #6366f1;
+}
+
+.sharing-content {
+  flex: 1;
+
+  h4 {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 2px;
+  }
+
+  p {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+  }
+}
+
+.sharing-check {
+  color: #6366f1;
+  font-size: 0.875rem;
+}
+
+// User Selection Components
+.user-chip {
+  @apply flex items-center space-x-2 px-3 py-2 rounded-xl font-medium transition-all duration-200 hover:shadow-sm;
+}
+
+.user-avatar {
+  @apply w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.user-avatar-small {
+  @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.remove-user-btn {
+  @apply ml-2 p-1 rounded-full hover:bg-white/50 transition-colors duration-200;
+}
+
+// Department Icons
+.dept-icon {
+  @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.dept-icon-small {
+  @apply w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Selected Item Chips - Plain styling without borders or effects
+.selected-item-chip {
+  @apply flex items-center space-x-2 px-3 py-2 rounded-xl font-medium bg-white;
+  // Removed: transition-all duration-200 hover:shadow-sm
+  // border: 1px solid #e2e8f0; // Removed border
+  color: #334155; // Consistent slate-700 text color
+  
+  // Removed hover effects - no border-color or box-shadow changes
+  // &:hover {
+  //   border-color: #cbd5e1;
+  //   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  // }
+}
+
+.remove-item-btn {
+  @apply ml-2 p-1 rounded-full hover:bg-slate-100 transition-colors duration-200;
+  color: #94a3b8; // slate-400
+  
+  &:hover {
+    color: #475569; // slate-600
+  }
+}
+
+// Dropdown Container Styling - Fixed z-index hierarchy
+#usersDropdown,
+#departmentsDropdown,
+#editorsUsersDropdown,
+#editorsDepartmentsDropdown {
+  position: relative;
+  z-index: 10;
+  
+  &.dropdown-open {
+    z-index: 999999;
+    position: relative;
+    
+    // Create stacking context
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+}
+
+// Dropdown Styling - Higher z-index to overlay everything - Theme Adaptive
+.dropdown-panel {
+  position: absolute;
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  margin-top: 4px;
+  max-height: 256px;
+  overflow: hidden;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 999999 !important;
+}
+
+.search-input-wrapper {
+  position: relative;
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-surface-hover);
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px 8px 40px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  outline: none;
+  color: var(--color-text-primary);
+
+  &:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+}
+
+.dropdown-list {
+  @apply py-2 max-h-48 overflow-y-auto;
+}
+
+.dropdown-item {
+  @apply px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors duration-150 border-b border-slate-50 last:border-b-0;
+
+  &:hover {
+    @apply bg-slate-50;
+  }
+
+  &:last-child {
+    @apply border-b-0;
+  }
+}
+
+.selection-indicator {
+  @apply flex-shrink-0;
+
+  .fa-check-circle {
+    @apply text-emerald-500 text-lg;
+  }
+
+  .fa-circle {
+    @apply text-slate-300 text-lg;
+  }
+}
+
+// Button Enhancements
+button {
+  @apply relative overflow-hidden;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    @apply cursor-not-allowed opacity-50;
+    transform: none;
+  }
+}
+
+// Form Field Enhancements
+.form-field {
+  @apply relative;
+
+  label {
+    @apply block text-sm font-medium text-slate-700 mb-2 cursor-pointer;
+
+    &:hover {
+      @apply text-slate-900;
+    }
+  }
+}
+
+// Ensure form container doesn't interfere with inputs
+form {
+  position: relative;
+  // z-index: 1;
+  pointer-events: auto;
+}
+
+// Ensure input containers are properly positioned
+  .space-y-2 {
+    position: relative;
+    z-index: 0;
+    pointer-events: auto;
+  }
+
+  // Ensure sections below dropdowns have low z-index
+  .space-y-4 {
+    position: relative;
+    z-index: 0;
+  }
+
+  .space-y-3 {
+    position: relative;
+    z-index: 0;
+  }
+
+  // Force lower z-index on all content when dropdown is open
+  .dropdown-open ~ * {
+    z-index: -1 !important;
+    position: relative;
+  }
+
+  // Specifically target content sections that should be behind dropdowns
+  .space-y-2:not(:has(.dropdown-open)) {
+    z-index: 1;
+  }
+
+  // Ensure departments section is behind users dropdown when open
+  #usersDropdown.dropdown-open ~ .space-y-2,
+  #usersDropdown.dropdown-open ~ * {
+    z-index: -10 !important;
+    position: relative;
+  }
+
+  // General rule for any dropdown
+  .relative.dropdown-open ~ * {
+    z-index: -10 !important;
+    position: relative;
+  }
+
+  // Specific targeting for create dashboard structure
+  .space-y-3:has(.dropdown-open) ~ * {
+    z-index: -20 !important;
+    position: relative;
+  }
+
+  // Target departments section specifically when users dropdown is open
+  .space-y-3 .space-y-2:has(#usersDropdown.dropdown-open) ~ .space-y-2 {
+    z-index: -30 !important;
+    position: relative;
+  }
+
+  // Broad targeting - when any dropdown is open, hide all subsequent content
+  .space-y-2:has(.dropdown-open) ~ * {
+    z-index: -50 !important;
+    position: relative;
+  }
+
+  // Alternative approach - set all form elements to very low z-index by default
+  form > * {
+    position: relative;
+    // z-index: 1;
+  }
+
+  // Ensure all sections have proper stacking
+  .space-y-4 > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .space-y-3 > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .space-y-2 > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  // When dropdown is open, force all other elements way back
+  body:has(.dropdown-open) .space-y-2:not(:has(.dropdown-open)),
+  body:has(.dropdown-open) .space-y-3:not(:has(.dropdown-open)),
+  body:has(.dropdown-open) .space-y-4:not(:has(.dropdown-open)) {
+    z-index: -100 !important;
+    position: relative;
+  }
+
+// Ensure no overlapping elements
+// .bg-white {
+//   position: relative;
+//   z-index: 1;
+// }
+
+// .rounded-3xl {
+//   position: relative;
+//   z-index: 10;
+// }
+
+// Ensure the main container doesn't interfere
+.min-h-screen {
+  position: relative;
+  z-index: 1;
+}
+
+// Ensure the form section is properly positioned
+.mx-auto.px-6.py-8 {
+  position: relative;
+  z-index: 1;
+}
+
+// Debug: Add specific styles for input fields to ensure they're clickable
+#dashboardName, #dashboardDescription {
+  position: relative !important;
+  z-index: 100 !important;
+  pointer-events: auto !important;
+  cursor: text !important;
+  background: white !important;
+  border: 1px solid #e2e8f0 !important;
+  transition: none !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 44px !important;
+  min-width: 200px !important;
+  
+  &:focus {
+    z-index: 200 !important;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+  }
+  
+  &:hover {
+    border-color: #94a3b8 !important;
+  }
+  
+  // Ensure the input is properly sized and clickable
+  &::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1 !important;
+  }
+}
+
+// Ensure the input containers are properly positioned
+.space-y-2:has(#dashboardName),
+.space-y-2:has(#dashboardDescription) {
+  position: relative !important;
+  z-index: 50 !important;
+  pointer-events: auto !important;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .sharing-option {
+    @apply p-3;
+
+    .sharing-icon {
+      @apply w-8 h-8 mr-3;
+    }
+  }
+
+  .user-chip {
+    @apply px-2 py-1.5;
+
+    .user-avatar {
+      @apply w-5 h-5 text-xs;
+    }
+  }
+
+  .selected-item-chip {
+    @apply px-2 py-1.5;
+
+    .user-avatar, .dept-icon-small {
+      @apply w-5 h-5 text-xs;
+    }
+  }
+}
+
+// Animation Classes
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-panel {
+  animation: fadeIn 0.2s ease-out;
+}
+
+// Focus States
+.focus-visible {
+  @apply outline-none ring-2 ring-blue-500/20 ring-offset-2;
+}
+
+// Custom Scrollbar
+.dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-list::-webkit-scrollbar-track {
+  @apply bg-slate-100 rounded-full;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+
+  &:hover {
+    @apply bg-slate-400;
+  }
+}
+
+// Enhanced Hover Effects
+.sharing-option:hover .sharing-icon {
+  transform: scale(1.05);
+}
+
+.user-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+// Removed hover effects for selected items - plain styling only
+// .selected-item-chip:hover {
+//   transform: translateY(-1px);
+//   box-shadow: var(--shadow-sm);
+// }
+
+// Section separators
+.border-t.border-slate-200 {
+  border-color: #e2e8f0;
+  border-width: 1px;
+  opacity: 0.6;
+}
+
+// Equal height input fields
+// #dashboardName, #dashboardDescription {
+//   min-height: 120px !important;
+//   height: 120px !important;
+//   display: flex !important;
+//   align-items: flex-start !important;
+//   padding-top: 14px !important;
+//   line-height: 1.5 !important;
+//   font-size: 14px !important;
+//   font-family: inherit !important;
+// }
+
+// #dashboardName {
+//   resize: none !important;
+//   white-space: pre-wrap !important;
+//   word-wrap: break-word !important;
+//   overflow-wrap: break-word !important;
+// }
+
+// #dashboardDescription {
+//   resize: none !important;
+//   white-space: pre-wrap !important;
+//   word-wrap: break-word !important;
+//   overflow-wrap: break-word !important;
+// }
+
+// Enhanced section separators
+.flex.items-center.mb-12 {
+  .border-t {
+    border-color: #e2e8f0;
+    border-width: 1px;
+    opacity: 0.6;
+  }
+  
+  .w-2.h-2.bg-slate-300 {
+    background-color: #cbd5e1;
+    box-shadow: 0 0 0 2px rgba(203, 213, 225, 0.3);
+  }
+}
+
+// Loading States (if needed)
+.loading {
+  @apply opacity-50 pointer-events-none;
+}
+
+// Success States
+.success {
+  @apply border-emerald-500 bg-emerald-50;
+}
+
+// Error States
+.error {
+  @apply border-red-500 bg-red-50;
+}
+
+// Accessibility
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// High Contrast Mode Support
+@media (prefers-contrast: high) {
+  .sharing-option {
+    @apply border-2;
+  }
+
+  .user-chip {
+    @apply border-2;
+  }
+
+  // Removed border for selected items - plain styling only
+  // .selected-item-chip {
+  //   @apply border-2;
+  // }
+}
+
+// Reduced Motion Support
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none;
+  }
+
+  .sharing-option:hover {
+    transform: none;
+  }
+
+  .user-chip:hover {
+    transform: none;
+  }
+
+  // Removed transform for selected items - plain styling only
+  // .selected-item-chip:hover {
+  //   transform: none;
+  // }
+}
+.relative {
+  // position: relative;
+}
+
+// Ensure dropdown containers are properly positioned
+.relative {
+  // position: relative;
+}
+
+// Dropdown container specific styles
+#usersDropdown,
+#departmentsDropdown,
+#editorsUsersDropdown,
+#editorsDepartmentsDropdown {
+  position: relative;
+  
+  .dropdown-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    // z-index: 1000;
+    margin-top: 0.5rem;
+  }
+}
+
+
+.icons{
+  color: #6366f1;
+}

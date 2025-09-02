@@ -1,0 +1,408 @@
+<div class="min-h-screen theme-background font-inter" style="pointer-events: auto; position: relative; z-index: 1; overflow: visible;">
+  <!-- Premium Header -->
+  <!-- <div class="sticky top-3 z-50 theme-surface-backdrop border-b theme-border shadow-sm" 
+       style="margin-left: 30px; margin-right: 30px; margin-bottom: 32px; border-radius: 12px;">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 theme-primary-gradient rounded-lg flex items-center justify-center shadow-md">
+            <mat-icon class="text-white text-sm">{{ isEditing ? 'edit' : 'add' }}</mat-icon>
+          </div>
+          <div>
+            <h1 class="text-xl font-semibold theme-text-primary">{{ isEditing ? 'Edit Widget' : 'Widget Builder' }}</h1>
+            <p class="theme-text-secondary text-sm">{{ isEditing ? 'Update your widget configuration' : 'Design and preview a modern widget with rich interactions' }}</p>
+          </div>
+        </div>
+        <div class="theme-text-secondary text-sm">Step {{ stepIndex + 1 }} of {{ steps.length }}</div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Enhanced Stepper with Connections -->
+  <div class="stepper-container" style="position: relative; z-index: 100;">
+    <div class="stepper-wrapper">
+      <div class="stepper-line"></div>
+      <div class="step-wrapper"
+           *ngFor="let s of steps; let i = index"
+           [style.--step-index]="i">
+        <div class="step"
+             [class.active]="i === stepIndex"
+             [class.completed]="i < stepIndex"
+             [class.upcoming]="i > stepIndex"
+             role="button"
+             tabindex="0"
+             (click)="goToStep(i)"
+             (keyup.enter)="goToStep(i)"
+             style="cursor: pointer; pointer-events: auto; position: relative; z-index: 101;">
+          <div class="step-circle">
+            <span *ngIf="i < stepIndex" class="step-icon completed">✓</span>
+            <span *ngIf="i === stepIndex" class="step-number current">{{ i + 1 }}</span>
+            <span *ngIf="i > stepIndex" class="step-number upcoming">{{ i + 1 }}</span>
+          </div>
+          <div class="step-label">{{ s.label }}</div>
+        </div>
+        <div class="step-connector" *ngIf="i < steps.length - 1" 
+             [class.active]="i < stepIndex"
+             [class.current]="i === stepIndex - 1"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cw-layout" style="pointer-events: auto; position: relative; z-index: 40;">
+    <!-- Main step content -->
+    <main class="cw-content" style="position: relative; z-index: 50; pointer-events: auto; overflow: visible;">
+      
+      <ng-container [ngSwitch]="stepIndex">
+        
+        <!-- Step 0: Data Source -->
+        <section *ngSwitchCase="0">
+          <div class="section-header">
+            <h3>Select Data Source</h3>
+            <p>Choose one source to power your widget.</p>
+          </div>
+
+          <div class="grid auto-fit">
+            <div class="option-card"
+                 *ngFor="let source of dataSources"
+                 role="button"
+                 tabindex="0"
+                 (click)="selectDataSource(source)"
+                 (keyup.enter)="selectDataSource(source)"
+                 [class.selected]="selectedDataSource === source"
+                 style="cursor: pointer; pointer-events: auto; position: relative; z-index: 10;"
+                 >
+              <div class="option-icon text-white" style="color: white;" [ngClass]="{
+         'bg-red-600 text-white': source.icon === 'payment',
+         'bg-blue-600 text-white': source.icon === 'file_copy',
+         'bg-green-600 text-white': source.icon === 'people',
+         'bg-yellow-600 text-white': source.icon === 'account_balance',
+         'bg-purple-600 text-white': source.icon === 'description',
+         'bg-orange-600 text-white': source.icon === 'notifications'
+       }">
+                <mat-icon >{{ source.icon }}</mat-icon>
+              </div>
+              <div class="option-info">
+                <h4>{{ source.name }}</h4>
+                <p>{{ source.description }}</p>
+              </div>
+              <mat-icon class="check" *ngIf="selectedDataSource === source">check</mat-icon>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 1: Chart Type -->
+        <section *ngSwitchCase="1">
+          <div class="section-header">
+            <h3>Choose Chart Type</h3>
+            <p>Select a visualization that fits your data.</p>
+          </div>
+
+          <div class="grid auto-fit">
+            <div class="option-card"
+                 *ngFor="let chart of chartTypes"
+                 role="button"
+                 tabindex="0"
+                 (click)="selectChart(chart)"
+                 (keyup.enter)="selectChart(chart)"
+                 [class.selected]="selectedChartType === chart"
+                 style="cursor: pointer; pointer-events: auto; position: relative; z-index: 10;">
+              <div class="option-icon">
+                <mat-icon>{{ chart.icon }}</mat-icon>
+              </div>
+              <div class="option-info">
+                <h4>{{ chart.title }}</h4>
+                <p>{{ chart.description }}</p>
+              </div>
+              <mat-icon class="check" *ngIf="selectedChartType === chart">check</mat-icon>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 2: Fields -->
+        <section *ngSwitchCase="2">
+          <div class="section-header">
+            <h3>Configure Fields</h3>
+            <p>Map fields based on the selected chart type.</p>
+          </div>
+
+          <!-- Table Fields -->
+          <div class="field-section" *ngIf="selectedChartType?.rules?.type === 'table'">
+            <div class="section-subheader">
+              <h4>Select Table Fields (Up to 8)</h4>
+              <span class="count">{{ getSelectedFieldsCount() }}/8</span>
+            </div>
+            <div class="grid fields">
+              <div class="field-card"
+                   *ngFor="let field of availableFields"
+                   (click)="selectField(field, 'tableFields')"
+                   [class.selected]="isFieldSelected(field, 'tableFields')">
+                <div class="field-top">
+                  <h4>{{ field.name }}</h4>
+                  <mat-icon class="type">{{ field.type === 'date' ? 'calendar_today' : (field.type === 'numeric' ? 'calculate' : 'text_fields') }}</mat-icon>
+                </div>
+                <div class="badge">{{ field.type }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bar/Line/Area Chart Fields -->
+          <div class="field-section" *ngIf="selectedChartType?.rules?.requiresXAxis || selectedChartType?.rules?.requiresYAxis">
+            <div class="axis-group" *ngIf="selectedChartType?.rules?.requiresXAxis">
+              <h4>X-Axis Field</h4>
+              <div class="grid fields">
+                <div class="field-card"
+                     *ngFor="let field of availableFields"
+                     (click)="selectField(field, 'xAxis')"
+                     [class.selected]="isFieldSelected(field, 'xAxis')">
+                  <div class="field-top">
+                    <h4>{{ field.name }}</h4>
+                    <mat-icon class="type">{{ field.type === 'date' ? 'calendar_today' : (field.type === 'numeric' ? 'calculate' : 'text_fields') }}</mat-icon>
+                  </div>
+                  <div class="badge">{{ field.type | uppercase}}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="axis-group" *ngIf="selectedChartType?.rules?.requiresYAxis">
+              <h4>Y-Axis Field (Numeric)</h4>
+              <div class="grid fields">
+                <div class="field-card"
+                     *ngFor="let field of numericFields"
+                     (click)="selectField(field, 'yAxis')"
+                     [class.selected]="isFieldSelected(field, 'yAxis')">
+                  <div class="field-top">
+                    <h4>{{ field.name }}</h4>
+                    <mat-icon class="type">calculate</mat-icon>
+                  </div>
+                  <div class="badge">{{ field.type | uppercase}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pie/Donut Chart Fields -->
+          <div class="field-section" *ngIf="selectedChartType?.rules?.requiresGroupFields">
+            <div class="section-subheader">
+              <h4>Group By Field</h4>
+              <p>Select a field to group your data</p>
+            </div>
+            <div class="grid fields">
+              <div class="field-card"
+                   *ngFor="let field of groupFields"
+                   (click)="selectField(field, 'groupField')"
+                   [class.selected]="isFieldSelected(field, 'groupField')">
+                <div class="field-top">
+                  <h4>{{ field.name }}</h4>
+                  <mat-icon class="type">group</mat-icon>
+                </div>
+                <div class="badge">group</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Count Widget Fields -->
+          <div class="field-section" *ngIf="selectedChartType?.rules?.type === 'count'">
+            <div class="section-subheader">
+              <h4>Count Field</h4>
+              <p>Select a numeric field to count or sum</p>
+            </div>
+            <div class="grid fields">
+              <div class="field-card"
+                   *ngFor="let field of numericFields"
+                   (click)="selectField(field, 'countField')"
+                   [class.selected]="isFieldSelected(field, 'countField')">
+                <div class="field-top">
+                  <h4>{{ field.name }}</h4>
+                  <mat-icon class="type">calculate</mat-icon>
+                </div>
+                <div class="badge">{{ field.type }}</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 3: Filters -->
+        <section *ngSwitchCase="3">
+          <div class="section-header">
+            <h3>Add Filters (Optional)</h3>
+            <p>Filter your data to show only what you need.</p>
+          </div>
+
+          <div class="filters-toolbar">
+            <h4>Applied Filters</h4>
+            <button type="button" class="btn ghost" (click)="addFilter()">
+              <mat-icon>add</mat-icon>
+              Add Filter
+            </button>
+          </div>
+
+          <div class="filter-list" *ngIf="selectedFilters.length > 0">
+            <div class="filter-item" *ngFor="let filter of selectedFilters; let i = index">
+              <div class="row">
+                <div class="fi">
+                  <label>Field</label>
+                  <select [(ngModel)]="filter.field" name="field_{{i}}">
+                    <option value="">Select field</option>
+                    <option *ngFor="let field of filterFields" [ngValue]="field">{{ field.name }}</option>
+                  </select>
+                </div>
+                <div class="fi">
+                  <label>Condition</label>
+                  <select [(ngModel)]="filter.condition" name="condition_{{i}}" [disabled]="!filter.field">
+                    <option value="">Select condition</option>
+                    <option *ngFor="let condition of filter.field?.conditions" [value]="condition">{{ condition }}</option>
+                  </select>
+                </div>
+                <div class="fi">
+                  <label>Value</label>
+                  <input *ngIf="filter.field?.type !== 'dropdown'" 
+                         type="text" 
+                         [(ngModel)]="filter.value" 
+                         name="value_{{i}}"
+                         [disabled]="!filter.condition">
+                  <select *ngIf="filter.field?.type === 'dropdown'" 
+                          [(ngModel)]="filter.value" 
+                          name="value_{{i}}"
+                          [disabled]="!filter.condition">
+                    <option value="">Select value</option>
+                    <option *ngFor="let option of filter.field?.options" [value]="option">{{ option }}</option>
+                  </select>
+                </div>
+                <button type="button" class="icon-btn" (click)="removeFilter(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty" *ngIf="selectedFilters.length === 0">
+            <mat-icon>filter_list</mat-icon>
+            No filters applied. Click "Add Filter" to start filtering your data.
+          </div>
+        </section>
+
+        <!-- Step 4: Preview -->
+        <section *ngSwitchCase="4">
+          <div class="section-header">
+            <h3>Preview Your Widget</h3>
+            <p>See how your widget will look with the current configuration.</p>
+          </div>
+
+          <div class="preview-container" *ngIf="!isLoadingPreview && previewData">
+            <div class="config">
+              <div class="row">
+                <span>Chart Type</span>
+                <strong>{{ selectedChartType?.title }}</strong>
+              </div>
+              <div class="row">
+                <span>Data Source</span>
+                <strong>{{ selectedDataSource?.name }}</strong>
+              </div>
+              <div class="row">
+                <span>Fields</span>
+                <strong>{{ getKeys(selectedFields).length }} configured</strong>
+              </div>
+              <div class="row">
+                <span>Filters</span>
+                <strong>{{ selectedFilters.length }} applied</strong>
+              </div>
+            </div>
+
+            <div class="viz-placeholder" style="height: 300px; margin-top: 20px;">
+              <mat-icon style="font-size: 48px; color: #ccc;">{{ selectedChartType?.icon }}</mat-icon>
+              <div>{{ selectedChartType?.title }} Preview</div>
+              <small>Actual data visualization will appear here</small>
+            </div>
+          </div>
+
+          <div class="loading-container" *ngIf="isLoadingPreview" style="text-align: center; padding: 40px;">
+            <div class="loading-spinner"></div>
+            <p>Generating preview...</p>
+          </div>
+        </section>
+
+        <!-- Step 5: Save -->
+        <section *ngSwitchCase="5">
+          <div class="section-header">
+            <h3>{{ isEditing ? 'Update Widget' : 'Save Widget' }}</h3>
+            <p>{{ isEditing ? 'Update your widget details.' : 'Give your widget a name and description.' }}</p>
+          </div>
+
+          <div class="form">
+                      <div class="fi">
+            <label>Widget Name <span class="sr-only">required</span></label>
+            <input type="text" [(ngModel)]="widgetName" name="widgetName" placeholder="Enter a descriptive name" style="pointer-events: auto; cursor: text; z-index: 10;" />
+          </div>
+          <div class="fi">
+            <label>Description</label>
+            <textarea rows="3" [(ngModel)]="widgetDescription" name="widgetDescription" placeholder="Optional description" style="pointer-events: auto; cursor: text; z-index: 10;"></textarea>
+          </div>
+          <div class="fi">
+            <label>Refresh Interval (seconds)</label>
+            <input type="number" [(ngModel)]="refreshInterval" name="refreshInterval" min="10" max="3600" step="10" style="pointer-events: auto; cursor: text; z-index: 10;" />
+          </div>
+          </div>
+
+          <div class="mini-summary">
+            <h4>Widget Summary</h4>
+            <div class="row"><span>Data Source</span> <strong>{{ selectedDataSource?.name || 'Not selected' }}</strong></div>
+            <div class="row"><span>Chart Type</span> <strong>{{ selectedChartType?.title || 'Not selected' }}</strong></div>
+            <div class="row"><span>Fields</span> <strong>{{ getKeys(selectedFields).length }} configured</strong></div>
+            <div class="row"><span>Filters</span> <strong>{{ selectedFilters.length }} applied</strong></div>
+          </div>
+        </section>
+      </ng-container>
+
+      <!-- Footer navigation -->
+      <div class="cw-footer">
+        <button *ngIf="stepIndex > 0" class="btn ghost" type="button" (click)="prev()" style="pointer-events: auto; cursor: pointer; z-index: 10;">
+          <mat-icon>arrow_back</mat-icon>
+          Previous
+        </button>
+
+        <div class="spacer"></div>
+        <button *ngIf="stepIndex < steps.length - 1" class="btn primary" type="button" (click)="next()" [disabled]="!canProceed()" style="cursor: pointer; z-index: 10;">
+          Next
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+        <button *ngIf="stepIndex === steps.length - 1" class="btn primary" type="button" (click)="saveWidget()" [disabled]="!canProceed() || isLoading" style="pointer-events: auto; cursor: pointer; z-index: 10;">
+          <mat-icon *ngIf="!isLoading">{{ isEditing ? 'save' : 'add' }}</mat-icon>
+          <div *ngIf="isLoading" class="loading-spinner-small"></div>
+          {{ isLoading ? 'Saving...' : (isEditing ? 'Update Widget' : 'Create Widget') }}
+        </button>
+      </div>
+    </main>
+
+    <!-- Live sticky summary + AI summary -->
+    <aside class="cw-summary">
+      <div class="summary-card">
+        <div class="summary-header">
+          <mat-icon>list</mat-icon>
+          <h4>Live Summary</h4>
+        </div>
+        <div class="summary-body">
+          <div class="item">
+            <span>Data Source</span>
+            <strong>{{ selectedDataSource?.name || 'Not selected' }}</strong>
+          </div>
+          <div class="item">
+            <span>Chart Type</span>
+            <strong>{{ selectedChartType?.title || 'Not selected' }}</strong>
+          </div>
+          <div class="item">
+            <span>Fields</span>
+            <strong>{{ getKeys(selectedFields).length }}</strong>
+          </div>
+          <div class="item">
+            <span>Filters</span>
+            <strong>{{ selectedFilters.length }}</strong>
+          </div>
+          <div class="item">
+            <span>Step</span>
+            <strong>{{ stepIndex + 1 }} of {{ steps.length }}</strong>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,90 @@
+<div class="widget-loading-skeleton h-full p-4 bg-white rounded-2xl shadow-lg border border-gray-200/50">
+  <!-- Header Skeleton -->
+  <div class="flex items-center justify-between mb-4">
+    <div class="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
+    <div class="flex space-x-2">
+      <div class="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+      <div class="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+      <div class="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+    </div>
+  </div>
+
+  <!-- Chart Skeleton -->
+  <div *ngIf="skeletonType === 'chart'" class="chart-skeleton">
+    <div class="h-64 bg-gray-100 rounded-lg relative overflow-hidden">
+      <!-- Animated gradient overlay -->
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
+      
+      <!-- Chart placeholder elements -->
+      <div class="absolute bottom-4 left-4 right-4">
+        <div class="flex justify-between items-end space-x-2 h-32">
+          <div class="bg-gray-200 rounded-t w-8 h-16 animate-pulse"></div>
+          <div class="bg-gray-200 rounded-t w-8 h-24 animate-pulse" style="animation-delay: 0.1s"></div>
+          <div class="bg-gray-200 rounded-t w-8 h-12 animate-pulse" style="animation-delay: 0.2s"></div>
+          <div class="bg-gray-200 rounded-t w-8 h-20 animate-pulse" style="animation-delay: 0.3s"></div>
+          <div class="bg-gray-200 rounded-t w-8 h-16 animate-pulse" style="animation-delay: 0.4s"></div>
+          <div class="bg-gray-200 rounded-t w-8 h-28 animate-pulse" style="animation-delay: 0.5s"></div>
+        </div>
+      </div>
+      
+      <!-- Center loading icon for pie charts -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="w-32 h-32 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Skeleton -->
+  <div *ngIf="skeletonType === 'kpi'" class="kpi-skeleton">
+    <div class="text-center space-y-4">
+      <div class="h-12 bg-gray-200 rounded w-24 mx-auto animate-pulse"></div>
+      <div class="h-6 bg-gray-200 rounded w-16 mx-auto animate-pulse"></div>
+      <div class="h-4 bg-gray-200 rounded w-20 mx-auto animate-pulse"></div>
+    </div>
+  </div>
+
+  <!-- Table Skeleton -->
+  <div *ngIf="skeletonType === 'table'" class="table-skeleton">
+    <!-- Search bar skeleton -->
+    <div class="mb-4 h-10 bg-gray-200 rounded animate-pulse"></div>
+    
+    <!-- Table header skeleton -->
+    <div class="flex space-x-4 mb-2">
+      <div class="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+      <div class="h-4 bg-gray-300 rounded w-24 animate-pulse"></div>
+      <div class="h-4 bg-gray-300 rounded w-16 animate-pulse"></div>
+      <div class="h-4 bg-gray-300 rounded w-20 animate-pulse"></div>
+      <div class="h-4 bg-gray-300 rounded w-18 animate-pulse"></div>
+    </div>
+    
+    <!-- Table rows skeleton -->
+    <div class="space-y-2">
+      <div *ngFor="let item of [1,2,3,4,5,6,7,8]; let i = index" 
+           class="flex space-x-4 h-8 items-center"
+           [style.animation-delay]="(i * 0.1) + 's'">
+        <div class="h-3 bg-gray-200 rounded w-20 animate-pulse"></div>
+        <div class="h-3 bg-gray-200 rounded w-24 animate-pulse"></div>
+        <div class="h-3 bg-gray-200 rounded w-16 animate-pulse"></div>
+        <div class="h-3 bg-gray-200 rounded w-20 animate-pulse"></div>
+        <div class="h-3 bg-gray-200 rounded w-12 animate-pulse"></div>
+      </div>
+    </div>
+    
+    <!-- Pagination skeleton -->
+    <div class="flex justify-between items-center mt-4">
+      <div class="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
+      <div class="flex space-x-2">
+        <div class="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
+        <div class="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
+        <div class="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
+        <div class="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading text -->
+  <div class="text-center mt-4">
+    <p class="text-sm text-gray-500 animate-pulse">{{ title }}</p>
+  </div>
+</div>
+

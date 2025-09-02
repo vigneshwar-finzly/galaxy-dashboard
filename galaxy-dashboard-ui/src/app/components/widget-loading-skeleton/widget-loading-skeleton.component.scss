@@ -1,0 +1,77 @@
+.widget-loading-skeleton {
+  // Base skeleton styling
+}
+
+// Shimmer animation
+.skeleton-shimmer {
+  animation: shimmer 2s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Pulse animation for skeleton elements
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+// Spin animation for loading indicators
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Chart skeleton specific styling
+.chart-skeleton {
+  .skeleton-shimmer {
+    animation-duration: 1.5s;
+  }
+}
+
+// KPI skeleton specific styling
+.kpi-skeleton {
+  .animate-pulse {
+    animation-duration: 1.8s;
+  }
+}
+
+// Table skeleton specific styling
+.table-skeleton {
+  .animate-pulse {
+    animation-duration: 1.6s;
+  }
+}
+
+// Staggered animation delays
+.space-y-2 > div:nth-child(1) { animation-delay: 0s; }
+.space-y-2 > div:nth-child(2) { animation-delay: 0.1s; }
+.space-y-2 > div:nth-child(3) { animation-delay: 0.2s; }
+.space-y-2 > div:nth-child(4) { animation-delay: 0.3s; }
+.space-y-2 > div:nth-child(5) { animation-delay: 0.4s; }
+.space-y-2 > div:nth-child(6) { animation-delay: 0.5s; }
+.space-y-2 > div:nth-child(7) { animation-delay: 0.6s; }
+.space-y-2 > div:nth-child(8) { animation-delay: 0.7s; }
+

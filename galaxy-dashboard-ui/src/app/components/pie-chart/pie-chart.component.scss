@@ -1,0 +1,334 @@
+// Ultra-Premium Pie Chart Widget Styles
+.premium-pie-chart-widget {
+  position: relative;
+  height: 100%;
+  border-radius: 1.5rem;
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+  
+  // Premium hover effects
+  &:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 
+      0 32px 64px -12px rgba(0, 0, 0, 0.08),
+      0 25px 50px -12px rgba(59, 130, 246, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      
+    .premium-widget-actions {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+  
+  // Glass morphism backdrop enhancements
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  // Premium stat cards animations
+  .group {
+    &:hover {
+      .text-2xl, .text-lg {
+        background: linear-gradient(135deg, #1f2937, #2563eb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        transition: all 0.3s ease;
+      }
+    }
+  }
+}
+  
+// Premium widget actions styling
+.premium-widget-actions {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  ::ng-deep {
+    .widget-header-title {
+      display: none !important;
+    }
+    
+    .widget-header-actions {
+      display: flex !important;
+      gap: 0.5rem;
+      
+      .action-button {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 1rem;
+        padding: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 
+          0 4px 16px rgba(0, 0, 0, 0.04),
+          0 2px 8px rgba(0, 0, 0, 0.02);
+        
+        &:hover {
+          background: rgba(255, 255, 255, 1);
+          border-color: rgba(59, 130, 246, 0.4);
+          transform: translateY(-2px) scale(1.05);
+          box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.08),
+            0 4px 16px rgba(59, 130, 246, 0.1);
+        }
+        
+        &:active {
+          transform: translateY(0) scale(1.02);
+          transition: all 0.1s ease;
+        }
+      }
+    }
+  }
+}
+
+// Ultra-Premium canvas styling with modern effects
+.premium-pie-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50%;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: crosshair;
+  filter: drop-shadow(0 12px 40px rgba(0, 0, 0, 0.08));
+  
+  &:hover {
+    filter: 
+      drop-shadow(0 16px 48px rgba(99, 102, 241, 0.15))
+      drop-shadow(0 8px 24px rgba(147, 51, 234, 0.1))
+      drop-shadow(0 4px 12px rgba(236, 72, 153, 0.08));
+    transform: scale(1.05) rotate(2deg);
+  }
+  
+  &:active {
+    transform: scale(1.02) rotate(1deg);
+    transition: transform 0.2s ease-out;
+  }
+}
+
+// Premium scrollbars
+.premium-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 12px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4));
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(139, 92, 246, 0.6));
+  }
+}
+
+  // Premium responsive design
+@media (max-width: 1200px) {
+  .premium-pie-chart-widget {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .premium-pie-chart-widget {
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    
+    h3 {
+      font-size: 1.125rem;
+    }
+    
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    
+    .premium-widget-actions {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-pie-chart-widget {
+    padding: 1rem;
+    border-radius: 1rem;
+    
+    h3 {
+      font-size: 1rem;
+    }
+    
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    
+    .group {
+      padding: 0.75rem;
+      
+      .text-2xl {
+        font-size: 1.25rem;
+      }
+    }
+  }
+}
+  
+  // Premium widget actions styling
+  .saas-widget-actions {
+    ::ng-deep .widget-header-title {
+      display: none !important;
+    }
+    
+    ::ng-deep .widget-header-actions {
+      display: flex !important;
+      gap: 0.5rem;
+      
+      .action-button {
+        background: rgba(255, 255, 255, 0.9);
+        // backdrop-filter: blur(12px);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        border-radius: 12px;
+        padding: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        
+        &:hover {
+          background: rgba(255, 255, 255, 1);
+          border-color: rgba(59, 130, 246, 0.3);
+          transform: translateY(-1px) scale(1.05);
+          box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15),
+                      0 4px 8px rgba(139, 92, 246, 0.1);
+        }
+        
+        &:active {
+          transform: translateY(0) scale(1.02);
+        }
+      }
+    }
+  }
+  
+  // Premium card hover animations
+  .group:hover {
+    .rounded-2xl {
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+    }
+  }
+  
+  // Chart container premium effects
+  .relative > canvas {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  // Legend premium hover effects
+  .cursor-pointer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  }
+  
+  // Premium focus states
+  select:focus,
+  .cursor-pointer:focus {
+    outline: 2px solid rgba(59, 130, 246, 0.4);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  }
+  
+  // Statistics card animations
+  .group {
+    &:hover {
+      .shadow-lg {
+        transform: scale(1.02);
+      }
+    }
+  }
+  
+  // Micro-interactions for premium feel
+  .rounded-xl:hover,
+  .rounded-2xl:hover {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+
+// High DPI displays optimization
+@media (min-resolution: 144dpi) {
+  .premium-pie-chart-widget {
+    .premium-pie-canvas {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+  }
+}
+
+// Premium dark mode support
+@media (prefers-color-scheme: dark) {
+  .premium-pie-chart-widget {
+    // Dark mode glass morphism
+    .absolute:first-child {
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.90), rgba(59, 130, 246, 0.05)) !important;
+    }
+    
+    &:hover {
+      box-shadow: 
+        0 32px 64px -12px rgba(0, 0, 0, 0.3),
+        0 25px 50px -12px rgba(59, 130, 246, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    
+    h3 {
+      background: linear-gradient(135deg, #f9fafb, #d1d5db);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .text-gray-500 {
+      color: #9ca3af !important;
+    }
+    
+    .text-gray-700 {
+      color: #d1d5db !important;
+    }
+    
+    .text-gray-900 {
+      color: #f9fafb !important;
+    }
+    
+    // Dark mode stat cards
+    .group {
+      background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9)) !important;
+      border-color: rgba(75, 85, 99, 0.4) !important;
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.95)) !important;
+        border-color: rgba(59, 130, 246, 0.4) !important;
+      }
+    }
+  }
+}

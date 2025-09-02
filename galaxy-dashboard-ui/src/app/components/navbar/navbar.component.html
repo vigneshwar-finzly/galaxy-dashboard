@@ -1,0 +1,335 @@
+<!-- Modern Linear/Notion Style Navigation Bar -->
+<nav class="modern-navbar" [class.scrolled]="isScrolled">
+  <div class="navbar-container">
+    <div class="navbar-content">
+      
+      <!-- Left Section: Brand & Dashboard Selector -->
+      <div class="left-section">
+        <!-- Brand Logo -->
+        <div class="brand-section">
+          <div class="logo-container">
+            <div class="logo-icon">
+              <svg class="logo-svg" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="brand-text">
+              <span class="brand-name">Galaxy</span>
+              <span class="brand-tagline">Dashboard</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modern Dashboard Selector -->
+        <div class="dashboard-selector-container" #selectorContainer>
+          <button class="modern-selector-trigger" 
+                  (click)="toggleDashboardSelector()"
+                  [class.expanded]="isDashboardSelectorExpanded">
+            <div class="selector-content">
+              <div class="selector-icon">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M10 6V4M10 10V8M10 16V14M4 10H6M8 10H12M16 10H14M4 6L6 8M6 12L4 14M16 6L14 8M14 12L16 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="dashboard-info">
+                <span class="dashboard-name">{{ currentDashboard?.name || 'Select Dashboard' }}</span>
+                <span class="dashboard-meta" *ngIf="currentDashboard">{{ currentDashboard.widgetCount }} widgets</span>
+              </div>
+              <div class="selector-actions">
+                <button class="star-button" 
+                        *ngIf="currentDashboard" 
+                        (click)="toggleCurrentDashboardFavorite($event)"
+                        [class.favorited]="currentDashboard.isFavorite">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" fill="currentColor"/>
+                  </svg>
+                </button>
+                <div class="selector-arrow">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path d="M6 8L10 12L14 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </button>
+
+          <!-- Enhanced Dashboard Dropdown -->
+          <div class="modern-dropdown" 
+               [class.open]="isDashboardSelectorExpanded"
+               *ngIf="isDashboardSelectorExpanded">
+            
+            <div class="dropdown-header">
+              <div class="search-wrapper">
+                <div class="search-icon">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path d="M8 4A4 4 0 108 12A4 4 0 108 4ZM8 6A2 2 0 118 10A2 2 0 118 6Z" fill="currentColor"/>
+                    <path d="M10.828 10.828L16.364 16.364" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <input #searchInput
+                       type="text" 
+                       placeholder="Search dashboards..."
+                       [(ngModel)]="searchQuery"
+                       (input)="filterDashboards()"
+                       class="search-input">
+              </div>
+
+              <div class="category-tabs">
+                <button class="tab-button" 
+                        [class.active]="selectedDashboardCategory === 'all'" 
+                        (click)="applyDashboardCategory('all')">
+                  <span>All</span>
+                </button>
+                <button class="tab-button" 
+                        [class.active]="selectedDashboardCategory === 'favorites'" 
+                        (click)="applyDashboardCategory('favorites')">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" fill="currentColor"/>
+                  </svg>
+                  <span>Favorites</span>
+                </button>
+                <button class="tab-button" 
+                        [class.active]="selectedDashboardCategory === 'personal'" 
+                        (click)="applyDashboardCategory('personal')">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" fill="currentColor"/>
+                  </svg>
+                  <span>Private</span>
+                </button>
+                <button class="tab-button" 
+                        [class.active]="selectedDashboardCategory === 'shared'" 
+                        (click)="applyDashboardCategory('shared')">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" fill="currentColor"/>
+                  </svg>
+                  <span>Shared</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="dashboards-list" *ngIf="!isLoadingDashboards">
+              <div class="dashboard-item" 
+                   *ngFor="let dashboard of filteredDashboards"
+                   [class.selected]="dashboard.id === currentDashboard?.id"
+                   (click)="selectDashboard(dashboard)">
+                
+                <div class="item-content">
+                  <div class="selection-indicator">
+                    <svg *ngIf="dashboard.id === currentDashboard?.id" viewBox="0 0 20 20" fill="none">
+                      <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <div class="dashboard-details">
+                    <h4 class="name">{{ dashboard.name }}</h4>
+                    <div class="meta">
+                      <span class="widget-count">{{ dashboard.widgetCount }} widgets</span>
+                      <span class="category-badge">{{ displayCategoryName(dashboard.category) }}</span>
+                      <span class="last-access">{{ dashboard.lastAccessed | date:'MMM d' }}</span>
+                    </div>
+                  </div>
+                  <button class="fav-button" 
+                          [class.favorited]="dashboard.isFavorite"
+                          (click)="toggleFavorite(dashboard, $event)">
+                    <svg viewBox="0 0 20 20" fill="none">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" fill="currentColor"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="loading-placeholder" *ngIf="isLoadingDashboards">
+              <div class="loading-spinner"></div>
+              <span>Loading dashboards...</span>
+            </div>
+
+            <div class="empty-placeholder" *ngIf="!isLoadingDashboards && filteredDashboards.length === 0">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M3 7V5a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 13h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 17h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <h4>No dashboards found</h4>
+              <p>Try adjusting your search or filters</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Section: Navigation & Actions -->
+      <div class="right-section">
+        
+        <!-- Primary Navigation -->
+        <div class="nav-menu">
+          <button 
+            (click)="openAddDashboardDialog()"
+            class="nav-button primary">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" fill="currentColor"/>
+            </svg>
+            <span>Create Dashboard</span>
+          </button>
+          
+          <button 
+            (click)="setActiveItem('manage-widget')"
+            class="nav-button">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" fill="currentColor"/>
+            </svg>
+            <span>Manage Widget</span>
+          </button>
+          
+          <button 
+            (click)="openAddWidgetDialog()"
+            class="nav-button accent">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Create Widget</span>
+          </button>
+        </div>
+
+        <!-- Actions Menu -->
+        <div class="actions-menu-wrapper">
+          <button 
+            (click)="toggleActionDropdown($event)"
+            (mousedown)="$event.stopPropagation()"
+            class="actions-button"
+            title="More Actions"
+            type="button">
+            <span>Actions</span>
+            <svg class="actions-arrow" viewBox="0 0 20 20" fill="none">
+              <path d="M6 8L10 12L14 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <!-- Enhanced Actions Dropdown -->
+          <div *ngIf="actionDropdownOpen" class="actions-dropdown">
+            <div class="dropdown-section">
+              <button (click)="toggleFullScreen()" class="dropdown-item">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4z" fill="currentColor"/>
+                  <path d="M14 3a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12a1 1 0 010-2h2z" fill="currentColor"/>
+                  <path d="M17 16a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L18 14.586V13a1 1 0 012 0v3z" fill="currentColor"/>
+                  <path d="M6 17a1 1 0 01-1-1v-4a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L7.414 16H9a1 1 0 010 2H6z" fill="currentColor"/>
+                </svg>
+                <span>Full Screen Mode</span>
+              </button>
+              <button (click)="editCurrentDashboard()" class="dropdown-item">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" fill="currentColor"/>
+                </svg>
+                <span>Edit Dashboard</span>
+              </button>
+              <button (click)="setAsDefaultDashboard()" class="dropdown-item">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M5 4a2 2 0 00-2 2v8a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2H5z" fill="currentColor"/>
+                  <path d="M8 2h4a1 1 0 011 1v1H7V3a1 1 0 011-1z" fill="currentColor"/>
+                </svg>
+                <span>Set as Default</span>
+              </button>
+              <button (click)="duplicateDashboard()" class="dropdown-item">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" fill="currentColor"/>
+                  <path d="M7 5a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V7a2 2 0 00-2-2H7z" fill="currentColor"/>
+                </svg>
+                <span>Duplicate Dashboard</span>
+              </button>
+              <button (click)="exportDashboard()" class="dropdown-item">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" fill="currentColor"/>
+                  <path d="M6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" fill="currentColor"/>
+                </svg>
+                <span>Export Dashboard</span>
+              </button>
+              <button (click)="shareDashboard()" class="dropdown-item">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" fill="currentColor"/>
+                </svg>
+                <span>Share Dashboard</span>
+              </button>
+            </div>
+
+            <div class="dropdown-section danger">
+              <button (click)="deleteDashboard()" class="dropdown-item danger">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" fill="currentColor"/>
+                </svg>
+                <span>Delete Dashboard</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button 
+          (click)="toggleMobileMenu()"
+          class="mobile-menu-btn"
+          [class.open]="mobileMenuOpen">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Enhanced Mobile Menu -->
+    <div *ngIf="mobileMenuOpen" class="mobile-menu">
+      <div class="mobile-nav-section">
+        <h6 class="mobile-section-title">Quick Actions</h6>
+        <div class="mobile-nav-items">
+          <button (click)="openAddDashboardDialog()" class="mobile-nav-item primary">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" fill="currentColor"/>
+            </svg>
+            <span>Create Dashboard</span>
+          </button>
+          <button (click)="setActiveItem('manage-widget')" class="mobile-nav-item">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" fill="currentColor"/>
+            </svg>
+            <span>Manage Widget</span>
+          </button>
+          <button (click)="openAddWidgetDialog()" class="mobile-nav-item accent">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Create Widget</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mobile-actions-section">
+        <h6 class="mobile-section-title">Dashboard Actions</h6>
+        <div class="mobile-action-buttons">
+          <button (click)="toggleFullScreen()" class="mobile-action-btn">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4z" fill="currentColor"/>
+              <path d="M14 3a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12a1 1 0 010-2h2z" fill="currentColor"/>
+              <path d="M17 16a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L18 14.586V13a1 1 0 012 0v3z" fill="currentColor"/>
+              <path d="M6 17a1 1 0 01-1-1v-4a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L7.414 16H9a1 1 0 010 2H6z" fill="currentColor"/>
+            </svg>
+            <span>Full Screen</span>
+          </button>
+          <button (click)="exportDashboard()" class="mobile-action-btn">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" fill="currentColor"/>
+              <path d="M6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" fill="currentColor"/>
+            </svg>
+            <span>Export</span>
+          </button>
+          <button (click)="shareDashboard()" class="mobile-action-btn">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" fill="currentColor"/>
+            </svg>
+            <span>Share</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,42 @@
+<div class="flex items-center justify-between mb-4 relative group">
+  <h3 class="text-base font-semibold text-gray-900 truncate flex-1 mr-4">{{ title }}</h3>
+  
+  <!-- Widget Controls -->
+  <div *ngIf="showControls" class="flex items-center space-x-1">
+    <!-- Refresh Button -->
+    <button 
+      (click)="handleRefresh()"
+      [disabled]="isLoading"
+      class="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed opacity-0 group-hover:opacity-100"
+      title="Refresh Data">
+      <i [class]="isLoading ? 'fas fa-spinner fa-spin text-sm' : 'fas fa-sync-alt text-sm'"></i>
+    </button>
+    
+    <!-- Expand Button -->
+    <button 
+      (click)="handleExpand()"
+      class="p-2 text-gray-400 hover:text-green-500 hover:bg-green-50 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
+      title="Expand View">
+      <i class="fas fa-expand text-sm"></i>
+    </button>
+    
+    <!-- Enhanced Close Button - Always Visible on Hover -->
+    <button 
+      (click)="handleClose()"
+      class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all duration-200 opacity-60 group-hover:opacity-100 hover:scale-110 ml-2 bg-white/80 shadow-sm hover:shadow-md border border-gray-200/50 hover:border-red-300"
+      title="Remove Widget">
+      <i class="fas fa-times text-xs"></i>
+    </button>
+  </div>
+
+  <!-- Floating Remove Button (Always Visible Alternative) -->
+  <div class="absolute -top-3 -right-3 z-20">
+    <button 
+      (click)="handleClose()"
+      class="w-7 h-7 bg-white border-2 border-gray-200 hover:border-red-300 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all duration-200 shadow-sm hover:shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 hover:scale-110"
+      title="Remove Widget">
+      <i class="fas fa-times text-xs"></i>
+    </button>
+  </div>
+</div>
+

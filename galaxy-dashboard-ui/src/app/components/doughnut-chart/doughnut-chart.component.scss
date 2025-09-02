@@ -1,0 +1,374 @@
+// Ultra-Premium Donut Chart Widget Styles
+.premium-donut-chart-widget {
+  position: relative;
+  height: 100%;
+  border-radius: 1.5rem;
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+  
+  // Premium hover effects
+  &:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 
+      0 32px 64px -12px rgba(0, 0, 0, 0.08),
+      0 25px 50px -12px rgba(236, 72, 153, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      
+    .premium-widget-actions {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+  
+  // Glass morphism backdrop enhancements
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  // Premium stat cards animations
+  .group {
+    &:hover {
+      .text-2xl, .text-lg {
+        background: linear-gradient(135deg, #1f2937, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        transition: all 0.3s ease;
+      }
+    }
+  }
+  
+  // Responsive chart layout - ensure space for perfect circle
+  .chart-layout {
+    min-height: 220px; // Better minimum for donut circles
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    
+    @media (min-width: 1024px) {
+      flex-direction: row; // Horizontal layout on large screens
+    }
+  }
+  
+  // Super responsive chart container - PERFECT CIRCLE for donut
+  .chart-container {
+    position: relative;
+    width: auto; // Let JavaScript control dimensions
+    height: auto; // Let JavaScript control dimensions
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible; // Ensure labels aren't cut off
+    aspect-ratio: 1; // Force 1:1 ratio for perfect circle
+  }
+  
+  // Dropdown z-index and overflow fix
+  .relative select {
+    position: relative;
+    z-index: 50;
+  }
+  
+  // Allow dropdown options to show outside rounded container
+  .controls-section {
+    position: relative;
+    z-index: 100;
+    
+    .time-filter {
+      // Create a stacking context to allow dropdown to escape rounded container
+      &.relative {
+        overflow: visible !important;
+        z-index: 100;
+      }
+      
+      select {
+        position: relative;
+        z-index: 100;
+      }
+    }
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 25px 50px -12px rgba(236, 72, 153, 0.25), 
+                0 0 0 1px rgba(236, 72, 153, 0.05);
+    
+    .widget-actions-only {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .premium-donut-canvas {
+      filter: drop-shadow(0 12px 30px rgba(236, 72, 153, 0.15));
+    }
+  }
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+// Premium widget actions styling
+.premium-widget-actions {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  ::ng-deep {
+    .widget-header-title {
+      display: none !important;
+    }
+    
+    .widget-header-actions {
+      display: flex !important;
+      gap: 0.5rem;
+      
+      .action-button {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 1rem;
+        padding: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 
+          0 4px 16px rgba(0, 0, 0, 0.04),
+          0 2px 8px rgba(0, 0, 0, 0.02);
+        
+        &:hover {
+          background: rgba(255, 255, 255, 1);
+          border-color: rgba(236, 72, 153, 0.4);
+          transform: translateY(-2px) scale(1.05);
+          box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.08),
+            0 4px 16px rgba(236, 72, 153, 0.1);
+        }
+        
+        &:active {
+          transform: translateY(0) scale(1.02);
+          transition: all 0.1s ease;
+        }
+      }
+    }
+  }
+}
+
+// Premium canvas styling (ultra-thin donut)
+.premium-donut-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50%;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: crosshair;
+  
+  &:hover {
+    filter: 
+      drop-shadow(0 8px 32px rgba(236, 72, 153, 0.1))
+      drop-shadow(0 4px 16px rgba(139, 92, 246, 0.05));
+    transform: scale(1.005);
+  }
+  
+  &:active {
+    transform: scale(0.995);
+    transition: transform 0.1s ease-out;
+  }
+}
+
+// Premium scrollbars
+.premium-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(236, 72, 153, 0.3) transparent;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 12px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.4), rgba(139, 92, 246, 0.4));
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.6), rgba(139, 92, 246, 0.6));
+  }
+}
+
+// Premium loading animations
+@keyframes premium-donut-shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes premium-donut-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(236, 72, 153, 0);
+  }
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Enhanced loading state styling
+.premium-donut-chart-widget .loading-state {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200px 100%;
+  animation: premium-donut-shimmer 2s infinite;
+}
+
+// Premium responsive design
+@media (max-width: 1200px) {
+  .premium-donut-chart-widget {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .premium-donut-chart-widget {
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    
+    h3 {
+      font-size: 1.125rem;
+    }
+    
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    
+    .premium-widget-actions {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-donut-chart-widget {
+    padding: 1rem;
+    border-radius: 1rem;
+    
+    h3 {
+      font-size: 1rem;
+    }
+    
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    
+    .group {
+      padding: 0.75rem;
+      
+      .text-2xl {
+        font-size: 1.25rem;
+      }
+    }
+  }
+}
+
+// High DPI displays optimization
+@media (min-resolution: 144dpi) {
+  .premium-donut-chart-widget {
+    .premium-donut-canvas {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+  }
+}
+
+// Premium dark mode support
+@media (prefers-color-scheme: dark) {
+  .premium-donut-chart-widget {
+    // Dark mode glass morphism
+    .absolute:first-child {
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.90), rgba(236, 72, 153, 0.05)) !important;
+    }
+    
+    &:hover {
+      box-shadow: 
+        0 32px 64px -12px rgba(0, 0, 0, 0.3),
+        0 25px 50px -12px rgba(236, 72, 153, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    
+    h3 {
+      background: linear-gradient(135deg, #f9fafb, #d1d5db);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .text-gray-500 {
+      color: #9ca3af !important;
+    }
+    
+    .text-gray-700 {
+      color: #d1d5db !important;
+    }
+    
+    .text-gray-900 {
+      color: #f9fafb !important;
+    }
+    
+    // Dark mode stat cards
+    .group {
+      background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9)) !important;
+      border-color: rgba(75, 85, 99, 0.4) !important;
+      
+      &:hover {
+        background: linear-gradient(135deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.95)) !important;
+        border-color: rgba(236, 72, 153, 0.4) !important;
+      }
+    }
+  }
+}

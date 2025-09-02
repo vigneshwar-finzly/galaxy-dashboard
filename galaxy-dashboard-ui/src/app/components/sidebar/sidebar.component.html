@@ -1,0 +1,179 @@
+<!-- Mobile Menu Overlay -->
+<div *ngIf="isMobile && showMobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+  (click)="sidebarService.closeMobileMenu()">
+</div>
+
+<!-- Mobile Menu Button -->
+<button *ngIf="isMobile" (click)="toggleSidebar()"
+  class="fixed top-4 left-4 z-50 lg:hidden p-2 rounded-lg bg-white border border-gray-200 shadow-md hover:bg-gray-50 transition-colors duration-200">
+  <i [class]="getIconClass(showMobileMenu ? 'x' : 'bars')" class="w-5 h-5 text-gray-700"></i>
+</button>
+
+<!-- Floating Sidebar -->
+<aside
+  class="floating-sidebar fixed left-4 top-4 h-[calc(100vh-2rem)] z-50 flex flex-col rounded-2xl bg-white shadow-elegant border border-gray-100"
+  [class.w-80]="!isCollapsed && !isMobile" [class.w-24]="isCollapsed && !isMobile"
+  [class.translate-x-0]="!isMobile || showMobileMenu" [class.-translate-x-full]="isMobile && !showMobileMenu"
+  [class.w-full]="isMobile && showMobileMenu" [class.max-w-sm]="isMobile && showMobileMenu" [class.left-4]="!isMobile"
+  [class.left-0]="isMobile">
+
+  <!-- Dashboard Header -->
+  <div class="dashboard-header p-6 border-b border-gray-100">
+    <div class="flex items-center space-x-3" [class.justify-center]="isCollapsed && !isMobile">
+      <!-- Icon -->
+       <div class="logo-container">
+           <div
+              class="logo-icon collapsed-logo text-lg flex-shrink-0 flex items-center justify-center rounded-xl bg-gradient-purple shadow-purple-soft">
+              <!-- <i class="fas fa-chart-pie text-white text-lg"></i> -->
+            </div>
+       </div>
+   
+
+      <!-- Name - Hidden in collapsed state -->
+      <div class="flex-1 min-w-0 transition-all duration-300" [class.opacity-0]="isCollapsed && !isMobile"
+        [class.w-0]="isCollapsed && !isMobile" [class.overflow-hidden]="isCollapsed && !isMobile">
+        <h2 class="text-gray-800 font-bold text-lg truncate">Dashboard</h2>
+        <!-- <p class="text-sm text-gray-500 truncate">Dashboard</p> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Section - Scrollable -->
+  <div class="flex-1 overflow-y-auto overflow-x-hidden">
+    <nav class="p-4 space-y-2">
+      <div *ngFor="let item of navItems" class="space-y-1">
+
+        <!-- Navigation Item -->
+        <!-- NAV ITEM -->
+        <div class="nav-item group relative" [class.active]="item.active">
+
+          <!-- EXPANDED VIEW -->
+          <ng-container *ngIf="!isCollapsed || isMobile; else collapsedView">
+            <div class="flex items-center space-x-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200"
+              [ngClass]="{
+          'bg-[var(--color-purple-700)] text-white border border-purple-200 shadow-purple-soft': item.active,
+          'hover:bg-gray-50 text-gray-700 hover:text-[var(--color-purple-700)]': !item.active
+          }" (click)="setActiveItem(item.id)" (mouseenter)="item.isActionButton && showActionDropdown($event)"
+              (mouseleave)="item.isActionButton && hideActionDropdown()">
+
+              <!-- Icon -->
+              <div class="w-5 h-5 flex items-center justify-center">
+                <i [class]="getIconClass(item.icon)" class="w-5 h-5" [ngClass]="{
+           'text-[var(--color-purple-600)]': !item.active,
+          'text-white': item.active
+          }"></i>
+              </div>
+
+              <!-- Label -->
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center space-x-2">
+                  <span class="font-medium truncate">{{ item.label }}</span>
+                </div>
+
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- COLLAPSED VIEW -->
+          <ng-template #collapsedView>
+            <div
+              class="flex flex-col items-center justify-center py-3 px-2 rounded-lg transition-colors duration-200 cursor-pointer"
+              [ngClass]="{
+          'bg-[var(--color-purple-700)] text-white': item.active,
+          'hover:bg-gray-50 text-gray-700 hover:text-[var(--color-purple-700)]': !item.active
+          }" 
+          (click)="item.isActionButton ? toggleActionDropdown($event) : setActiveItem(item.id)"
+              (mouseenter)="item.isActionButton && showActionDropdown($event)"
+              (mouseleave)="item.isActionButton && hideActionDropdown()">
+
+              <!-- Icon -->
+              <div class="w-6 h-6 flex items-center justify-center mb-1" style="color: white;">
+                <i [class]="getIconClass(item.icon)" class="w-5 h-5" [ngClass]="{
+            'text-white': item.active,
+            'text-[var(--color-purple-600)]': !item.active
+          }">
+                </i>
+              </div>
+
+              <!-- Short Name -->
+              <span class="text-xs font-medium text-center leading-tight" [ngClass]="{
+              'text-white': item.active,
+              'text-gray-500': !item.active
+            }">
+                {{ getShortName(item.label) }}
+              </span>
+            </div>
+          </ng-template>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+
+  <!-- User Profile Section - Fixed at bottom -->
+  <div class="flex-shrink-0 p-4 border-t border-gray-200 rounded-b-xl">
+
+    <!-- Action Buttons -->
+    <div class="space-y-2">
+      <button *ngIf="!isMobile" (click)="toggleSidebar()"
+        class="w-full flex items-center justify-center space-x-2 px-3 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200 group">
+        <i class="fas fa-chevron-left w-4 h-4 transition-transform duration-300 flex-shrink-0"
+          [class.rotate-180]="isCollapsed"></i>
+        <span class="text-sm font-medium transition-opacity duration-300 truncate whitespace-nowrap"
+          [class.opacity-0]="isCollapsed" [class.w-0]="isCollapsed" [class.overflow-hidden]="isCollapsed">{{ isCollapsed
+          ? 'Expand' : 'Collapse' }}</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- Modern Hover Dropdown -->
+<div *ngIf="actionDropdownOpen" class="modern-action-dropdown" [style.--dropdown-top.px]="actionDropdownPosition.top"
+  [style.--dropdown-left.px]="actionDropdownPosition.left" (mouseenter)="keepDropdownOpen()"
+  (mouseleave)="hideActionDropdown()">
+
+  <!-- Dropdown Header -->
+  <div class="dropdown-header">
+    <div class="header-icon">
+      <i class="fas fa-palette"></i>
+    </div>
+    <div class="header-content">
+      <h3 class="header-title">Color Themes</h3>
+      <p class="header-subtitle">Choose your style</p>
+    </div>
+  </div>
+
+  <!-- Dropdown Divider -->
+  <div class="dropdown-divider"></div>
+
+  <!-- Action Items -->
+  <div class="action-items">
+    <div *ngFor="let actionItem of actionDropdownItems; let i = index" (click)="onActionItemClick(actionItem.id)"
+      class="action-item" [style.animation-delay]="(i * 0.05) + 's'">
+
+      <!-- Action Icon -->
+      <div class="action-icon icon-info" [ngClass]="actionItem.iconClass">
+        <i [class]="getIconClass(actionItem.icon)"></i>
+      </div>
+
+      <!-- Action Content -->
+      <div class="action-content">
+        <span class="action-label">{{ actionItem.label }}</span>
+        <span class="action-description">{{ actionItem.description }}</span>
+      </div>
+
+      <!-- Action Arrow -->
+      <div class="action-arrow">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown Footer -->
+  <div class="dropdown-footer">
+    <div class="footer-text">
+      <i class="fas fa-palette"></i>
+      <span>Click to apply theme</span>
+    </div>
+  </div>
+</div>

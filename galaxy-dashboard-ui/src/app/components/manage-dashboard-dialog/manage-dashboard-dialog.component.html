@@ -1,0 +1,19 @@
+<div class="create-dashboard-dialog">
+  <div class="dialog-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="fas fa-sliders-h text-white"></i>
+      </div>
+      <h2 class="dialog-title">Manage Dashboard</h2>
+    </div>
+    <button class="close-button" type="button" (click)="onClose()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="dialog-content">
+    <app-manage-dashboard [currentDashboard]="data?.currentDashboard"></app-manage-dashboard>
+  </div>
+</div>
+
+

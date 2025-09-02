@@ -1,0 +1,526 @@
+<div class="min-h-screen font-inter theme-background">
+  <!-- Header Section -->
+  <div class="sticky top-3 z-50 theme-surface-backdrop border-b theme-border shadow-sm" style="margin-left: 30px; margin-right: 30px; border-radius: 12px;">
+    <div class=" mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
+          <i class="fas fa-plus text-white text-sm"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-semibold theme-text-primary">Create Dashboard</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class=" mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="theme-surface rounded-xl shadow-md border theme-border overflow-hidden">
+      <form (ngSubmit)="createDashboard()" class="p-6" [class.dropdown-active]="isAnyDropdownOpen">
+        
+        <!-- Section 1: Basic Information -->
+        <div class="mb-8">
+          <!-- <div class="flex items-center space-x-3 mb-6">
+            <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <i class="fas fa-info text-white text-sm"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold theme-text-primary">Basic Information</h2>
+            </div>
+          </div> -->
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label for="dashboardName" class="block text-sm font-medium theme-text-primary">
+                Dashboard Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="dashboardName"
+                [(ngModel)]="dashboardName"
+                name="dashboardName"
+                maxlength="50"
+                class="theme-input w-full px-3 py-2.5 rounded-lg transition-colors"
+                placeholder="Enter dashboard name"
+                required>
+              <div class="text-right text-xs theme-text-secondary">{{ dashboardName.length || 0 }}/50</div>
+            </div>
+            
+            <div class="space-y-2">
+              <label for="dashboardDescription" class="block text-sm font-medium theme-text-primary">
+                Description
+              </label>
+              <textarea
+                id="dashboardDescription"
+                [(ngModel)]="dashboardDescription"
+                name="dashboardDescription"
+                rows="4"
+                maxlength="100"
+                class="theme-input w-full px-3 py-2.5 rounded-lg resize-none transition-colors"
+                placeholder="Describe what this dashboard will display..."></textarea>
+              <div class="text-right text-xs theme-text-secondary">{{ dashboardDescription.length || 0 }}/100</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Separator -->
+        <div class="relative mb-8">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-200"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-white text-gray-500">
+              <i class="fas fa-chevron-down"></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Section 2: Access Control -->
+        <div class="mb-8">
+          <!-- <div class="flex items-center space-x-3 mb-6">
+            <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <i class="fas fa-shield-alt text-white text-sm"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold theme-text-primary">Access Control</h2>
+            </div>
+          </div> -->
+
+        <!-- Two Column Layout for Viewers and Editors -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 relative">
+          <!-- Viewers Column -->
+          <div>
+            <div class="flex items-center space-x-3 mb-4">
+              <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                <i class="fas fa-eye text-white text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-sm font-medium theme-text-primary">Viewers</h3>
+              </div>
+
+            </div>
+          
+            <div class="space-y-3">
+            <!-- Sharing Type Selection -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div class="sharing-option compact" 
+                   [class.selected]="viewer === 'Private'"
+                   (click)="viewer = 'Private'; onViewerChange();">
+                <div class="sharing-icon bg-slate-100 text-slate-600">
+                    <i class="fas fa-lock text-xs"></i>
+                </div>
+                <div class="sharing-content">
+                    <h4 class="font-medium text-slate-900 text-sm">Private</h4>
+                </div>
+                <div class="sharing-check" *ngIf="viewer === 'Private'">
+                    <i class="fas fa-check text-indigo-500 text-xs"></i>
+                  </div>
+              </div>
+              
+                <div class="sharing-option compact" 
+                   [class.selected]="viewer === 'Global'"
+                   (click)="viewer = 'Global'; onViewerChange();">
+                <div class="sharing-icon bg-slate-100 text-slate-600">
+                    <i class="fas fa-globe text-xs"></i>
+                </div>
+                <div class="sharing-content">
+                    <h4 class="font-medium text-slate-900 text-sm">Global</h4>
+                </div>
+                <div class="sharing-check" *ngIf="viewer === 'Global'">
+                    <i class="fas fa-check text-indigo-500 text-xs"></i>
+                  </div>
+              </div>
+              
+                <div class="sharing-option compact" 
+                   [class.selected]="viewer === 'Shared'"
+                   (click)="viewer = 'Shared'; onViewerChange();">
+                 <div class="sharing-icon bg-slate-100 text-slate-600">
+                    <i class="fas fa-users text-xs"></i>
+                </div>
+                <div class="sharing-content">
+                    <h4 class="font-medium text-slate-900 text-sm">Shared</h4>
+                </div>
+                <div class="sharing-check" *ngIf="viewer === 'Shared'">
+                    <i class="fas fa-check text-indigo-500 text-xs"></i>
+                  </div>
+              </div>
+            </div>
+
+            <!-- User and Department Selection for Shared -->
+              <div *ngIf="viewer === 'Shared'" class="space-y-4">
+                <!-- Compact Layout for Users and Departments -->
+                <div class="space-y-3">
+                  <!-- Users Section -->
+                  <div class="space-y-2">
+                    <label class="text-xs font-medium text-slate-700">Users</label>
+                    <div class="relative" #usersDropdown id="usersDropdown" [class.dropdown-open]="isUsersDropdownOpen">
+                      <div class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-200 hover:border-slate-300"
+                         [class.border-blue-500]="isUsersDropdownOpen"
+                         (click)="toggleDropdown('users')">
+                        <span class="text-slate-400 text-xs">Select users...</span>
+                      <i class="fas fa-chevron-down ml-auto text-slate-400 text-xs"></i>
+                    </div>
+                    
+                    <!-- Dropdown Panel -->
+                    <div *ngIf="isUsersDropdownOpen" class="dropdown-panel">
+                      <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" 
+                               class="search-input" 
+                               [(ngModel)]="usersSearchTerm" 
+                               (input)="filterUsers()" 
+                               name="userSearchDropdown" 
+                               placeholder="Search users...">
+                      </div>
+                      <ul class="dropdown-list">
+                        <li *ngFor="let user of filteredMockUsers; trackBy: trackById"
+                            class="dropdown-item"
+                            (click)="toggleSelection(user, 'user')">
+                          <div class="flex items-center space-x-3">
+                            <div class="user-avatar-small text-sm font-semibold"
+                                 [style.background]="getUserAvatarColor(user.id)"
+                                 [style.color]="getUserAvatarTextColor(user.id)">
+                              {{ getUserInitials(user.id) }}
+                            </div>
+                            <div class="flex-1">
+                              <div class="font-medium text-slate-900">{{ user.name }}</div>
+                              <div class="text-sm text-slate-500">{{ user.department }}</div>
+                            </div>
+                            <div class="selection-indicator">
+                              <i class="fas fa-check-circle text-emerald-500" *ngIf="isSelected('user', user)"></i>
+                              <i class="far fa-circle text-slate-300" *ngIf="!isSelected('user', user)"></i>
+                            </div>
+                          </div>
+                        </li>
+                        <li *ngIf="filteredMockUsers.length === 0" class="dropdown-item text-slate-500 text-center py-4">
+                          No users found
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                  <!-- Departments Section -->
+                  <div class="space-y-2">
+                    <label class="text-xs font-medium text-slate-700">Departments</label>
+                    <div class="relative" #departmentsDropdown id="departmentsDropdown" [class.dropdown-open]="isDepartmentsDropdownOpen">
+                      <div class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-200 hover:border-slate-300"
+                         [class.border-blue-500]="isDepartmentsDropdownOpen"
+                         (click)="toggleDropdown('departments')">
+                        <span class="text-slate-400 text-xs">Select departments...</span>
+                      <i class="fas fa-chevron-down ml-auto text-slate-400 text-xs"></i>
+                    </div>
+                    
+                    <!-- Dropdown Panel -->
+                    <div *ngIf="isDepartmentsDropdownOpen" class="dropdown-panel">
+                      <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" 
+                               class="search-input" 
+                               [(ngModel)]="departmentsSearchTerm" 
+                               (input)="filterDepartments()" 
+                               name="departmentSearchDropdown" 
+                               placeholder="Search departments...">
+                      </div>
+                      <ul class="dropdown-list">
+                        <li *ngFor="let dept of filteredMockDepartments; trackBy: trackById"
+                            class="dropdown-item"
+                            (click)="toggleSelection(dept, 'department')">
+                          <div class="flex items-center space-x-3">
+                            <div class="dept-icon bg-gradient-to-br from-blue-400 to-blue-600 text-white text-sm font-semibold">
+                              <i class="fas fa-building"></i>
+                            </div>
+                            <div class="flex-1">
+                              <div class="font-medium text-slate-900">{{ dept.name }}</div>
+                              <div class="text-sm text-slate-500">{{ dept.description }}</div>
+                            </div>
+                            <div class="selection-indicator">
+                              <i class="fas fa-check-circle text-emerald-500" *ngIf="isSelected('department', dept)"></i>
+                              <i class="far fa-circle text-slate-300" *ngIf="!isSelected('department', dept)"></i>
+                            </div>
+                          </div>
+                        </li>
+                        <li *ngIf="filteredMockDepartments.length === 0" class="dropdown-item text-slate-500 text-center py-4">
+                          No departments found
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Selected Items Display Below -->
+              <div class="space-y-4">
+                <!-- Selected Users -->
+                <div *ngIf="selectedUsers.length > 0" class="space-y-2">
+                  <h4 class="text-sm font-medium text-slate-700">Selected Users</h4>
+                  <div class="flex flex-wrap gap-2">
+                    <div *ngFor="let user of selectedUsers; trackBy: trackById" 
+                         class="selected-item-chip text-slate-700">
+                      <div class="user-avatar text-xs font-semibold"
+                           [style.background]="getUserAvatarColor(user.id)"
+                           [style.color]="getUserAvatarTextColor(user.id)">
+                        {{ getUserInitials(user.id) }}
+                      </div>
+                      <span class="text-sm font-medium">{{ user.name }}</span>
+                      <button type="button" 
+                              class="remove-item-btn"
+                              (click)="toggleSelection(user, 'user', $event)">
+                        <i class="fas fa-times text-slate-400 hover:text-slate-600"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Selected Departments -->
+                <div *ngIf="selectedDepartments.length > 0" class="space-y-2">
+                  <h4 class="text-sm font-medium text-slate-700">Selected Departments</h4>
+                  <div class="flex flex-wrap gap-2">
+                    <div *ngFor="let dept of selectedDepartments; trackBy: trackById" 
+                         class="selected-item-chip text-slate-700">
+                      <div class="dept-icon-small bg-blue-500 text-white text-xs">
+                        <i class="fas fa-building"></i>
+                      </div>
+                      <span class="text-sm font-medium">{{ dept.name }}</span>
+                      <button type="button" 
+                              class="remove-item-btn"
+                              (click)="toggleSelection(dept, 'department', $event)">
+                        <i class="fas fa-times text-slate-400 hover:text-slate-600"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+                  </div>
+
+          <!-- Vertical Separator -->
+          <div class="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px theme-border-separator transform -translate-x-1/2"></div>
+
+          <!-- Editors Column -->
+          <div [class.opacity-50]="isEditorsDisabled" [class.pointer-events-none]="isEditorsDisabled">
+            <div class="flex items-center space-x-3 mb-4">
+              <div class="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center" [class.opacity-50]="isEditorsDisabled">
+                <i class="fas fa-edit text-white text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-sm font-medium theme-text-primary" [class.text-gray-400]="isEditorsDisabled">Editors</h3>
+              </div>
+
+            </div>
+            
+            <div class="space-y-3">
+              <!-- Editor Sharing Type Selection -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div class="sharing-option compact" 
+                     [class.selected]="editor === 'Private'"
+                     [class.cursor-not-allowed]="isEditorsDisabled"
+                     (click)="!isEditorsDisabled && (editor = 'Private') && onEditorChange();">
+                  <div class="sharing-icon bg-slate-100 text-slate-600">
+                    <i class="fas fa-lock text-xs"></i>
+                  </div>
+                  <div class="sharing-content">
+                    <h4 class="font-medium text-slate-900 text-sm">Private</h4>
+                  </div>
+                  <div class="sharing-check" *ngIf="editor === 'Private'">
+                    <i class="fas fa-check text-indigo-500 text-xs"></i>
+                  </div>
+                </div>
+                
+                <div class="sharing-option compact" 
+                     [class.selected]="editor === 'Global'"
+                     [class.cursor-not-allowed]="isEditorsDisabled"
+                     (click)="!isEditorsDisabled && (editor = 'Global') && onEditorChange();">
+                  <div class="sharing-icon bg-slate-100 text-slate-600">
+                    <i class="fas fa-globe text-xs"></i>
+                  </div>
+                  <div class="sharing-content">
+                    <h4 class="font-medium text-slate-900 text-sm">Global</h4>
+                  </div>
+                  <div class="sharing-check" *ngIf="editor === 'Global'">
+                    <i class="fas fa-check text-indigo-500 text-xs"></i>
+                  </div>
+                </div>
+                
+                <div class="sharing-option compact" 
+                     [class.selected]="editor === 'Shared'"
+                     [class.cursor-not-allowed]="isEditorsDisabled"
+                     (click)="!isEditorsDisabled && (editor = 'Shared') && onEditorChange();">
+                 <div class="sharing-icon bg-slate-100 text-slate-600">
+                    <i class="fas fa-users text-xs"></i>
+                  </div>
+                  <div class="sharing-content">
+                    <h4 class="font-medium text-slate-900 text-sm">Shared</h4>
+                  </div>
+                  <div class="sharing-check" *ngIf="editor === 'Shared'">
+                    <i class="fas fa-check text-indigo-500 text-xs"></i>
+                  </div>
+            </div>
+          </div>
+          
+              <!-- User and Department Selection for Shared Editors -->
+              <div *ngIf="editor === 'Shared' && !isEditorsDisabled" class="space-y-4">
+                <!-- Compact Layout for Users and Departments -->
+              <div class="space-y-3">
+                  <!-- Users Section -->
+                  <div class="space-y-2">
+                    <label class="text-xs font-medium text-slate-700">Users</label>
+                    <div class="relative" #editorsUsersDropdown id="editorsUsersDropdown" [class.dropdown-open]="isEditorsUsersDropdownOpen">
+                      <div class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-200 hover:border-slate-300"
+                       [class.border-indigo-500]="isEditorsUsersDropdownOpen"
+                       (click)="toggleDropdown('editorsUsers')">
+                        <span class="text-slate-400 text-xs">Select users...</span>
+                    <i class="fas fa-chevron-down ml-auto text-slate-400 text-xs"></i>
+                  </div>
+                  
+                  <!-- Dropdown Panel -->
+                  <div *ngIf="isEditorsUsersDropdownOpen" class="dropdown-panel">
+                    <div class="search-input-wrapper">
+                      <i class="fas fa-search search-icon"></i>
+                      <input type="text" 
+                             class="search-input" 
+                             [(ngModel)]="editorsUsersSearchTerm" 
+                             (input)="filterEditors()" 
+                             name="editorUserSearchDropdown" 
+                             placeholder="Search users...">
+                    </div>
+                    <ul class="dropdown-list">
+                      <li *ngFor="let user of filteredEditorUsers; trackBy: trackById"
+                          class="dropdown-item"
+                          (click)="toggleSelection(user, 'editorUser')">
+                        <div class="flex items-center space-x-3">
+                          <div class="user-avatar-small text-sm font-semibold"
+                               [style.background]="getUserAvatarColor(user.id)"
+                               [style.color]="getUserAvatarTextColor(user.id)">
+                            {{ getUserInitials(user.id) }}
+                          </div>
+                          <div class="flex-1">
+                            <div class="font-medium text-slate-900">{{ user.name }}</div>
+                            <div class="text-sm text-slate-500">{{ user.department }}</div>
+                          </div>
+                          <div class="selection-indicator">
+                                                          <i class="fas fa-check-circle text-emerald-500" *ngIf="isSelected('editorUser', user)"></i>
+                              <i class="far fa-circle text-slate-300" *ngIf="!isSelected('editorUser', user)"></i>
+                          </div>
+                        </div>
+                      </li>
+                      <li *ngIf="filteredEditorUsers.length === 0" class="dropdown-item text-slate-500 text-center py-4">
+                        No users found
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+                  <!-- Departments Section -->
+                  <div class="space-y-2">
+                    <label class="text-xs font-medium text-slate-700">Departments</label>
+                    <div class="relative" #editorsDepartmentsDropdown id="editorsDepartmentsDropdown" [class.dropdown-open]="isEditorsDepartmentsDropdownOpen">
+                      <div class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-200 hover:border-slate-300"
+                       [class.border-indigo-500]="isEditorsDepartmentsDropdownOpen"
+                       (click)="toggleDropdown('editorsDepartments')">
+                        <span class="text-slate-400 text-xs">Select departments...</span>
+                    <i class="fas fa-chevron-down ml-auto text-slate-400 text-xs"></i>
+                  </div>
+                  
+                  <!-- Dropdown Panel -->
+                  <div *ngIf="isEditorsDepartmentsDropdownOpen" class="dropdown-panel">
+                    <div class="search-input-wrapper">
+                      <i class="fas fa-search search-icon"></i>
+                      <input type="text" 
+                             class="search-input" 
+                             [(ngModel)]="editorsDepartmentsSearchTerm" 
+                             (input)="filterEditors()" 
+                             name="editorDepartmentSearchDropdown" 
+                             placeholder="Search departments...">
+                    </div>
+                    <ul class="dropdown-list">
+                      <li *ngFor="let dept of filteredEditorDepartments; trackBy: trackById"
+                          class="dropdown-item"
+                          (click)="toggleSelection(dept, 'editorDepartment')">
+                        <div class="flex items-center space-x-3">
+                          <div class="dept-icon bg-gradient-to-br from-blue-400 to-blue-600 text-white text-sm font-semibold">
+                            <i class="fas fa-building"></i>
+                          </div>
+                          <div class="flex-1">
+                            <div class="font-medium text-slate-900">{{ dept.name }}</div>
+                            <div class="text-sm text-slate-500">{{ dept.description }}</div>
+                          </div>
+                          <div class="selection-indicator">
+                                                          <i class="fas fa-check-circle text-emerald-500" *ngIf="isSelected('editorDepartment', dept)"></i>
+                              <i class="far fa-circle text-slate-300" *ngIf="!isSelected('editorDepartment', dept)"></i>
+                          </div>
+                        </div>
+                      </li>
+                      <li *ngIf="filteredEditorDepartments.length === 0" class="dropdown-item text-slate-500 text-center py-4">
+                        No departments found
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selected Editor Items Display Below -->
+                <div class="space-y-3">
+              <!-- Selected Editor Users -->
+              <div *ngIf="selectedEditorUsers.length > 0" class="space-y-2">
+                    <h4 class="text-xs font-medium text-slate-700">Selected Users</h4>
+                <div class="flex flex-wrap gap-2">
+                                      <div *ngFor="let user of selectedEditorUsers; trackBy: trackById" 
+                         class="selected-item-chip text-slate-700">
+                      <div class="user-avatar text-xs font-semibold"
+                           [style.background]="getUserAvatarColor(user.id)"
+                           [style.color]="getUserAvatarTextColor(user.id)">
+                        {{ getUserInitials(user.id) }}
+                      </div>
+                        <span class="text-xs font-medium">{{ user.name }}</span>
+                    <button type="button" 
+                            class="remove-item-btn"
+                            (click)="toggleSelection(user, 'editorUser', $event)">
+                      <i class="fas fa-times text-slate-400 hover:text-slate-600"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Selected Editor Departments -->
+              <div *ngIf="selectedEditorDepartments.length > 0" class="space-y-2">
+                    <h4 class="text-xs font-medium text-slate-700">Selected Departments</h4>
+                <div class="flex flex-wrap gap-2">
+                  <div *ngFor="let dept of selectedEditorDepartments; trackBy: trackById" 
+                       class="selected-item-chip text-slate-700">
+                                          <div class="dept-icon-small bg-blue-500 text-white text-xs">
+                        <i class="fas fa-building"></i>
+                      </div>
+                        <span class="text-xs font-medium">{{ dept.name }}</span>
+                    <button type="button" 
+                            class="remove-item-btn"
+                            (click)="toggleSelection(dept, 'editorDepartment', $event)">
+                      <i class="fas fa-times text-slate-400 hover:text-slate-600"></i>
+                    </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-3 pt-6">
+          <button
+            type="submit"
+            [disabled]="!dashboardName.trim()"
+            class="theme-btn-primary">
+            <i class="fas fa-plus text-sm"></i>
+            <span>Create Dashboard</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

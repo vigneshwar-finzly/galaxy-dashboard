@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: ./docker-local/Dockerfile
+    image: dashboard
+    hostname: galaxy-dashboard
+    ports:
+      - "8089:8089"
+    networks:
+      local-docker-network:
+        ipv4_address: 172.18.0.30
+    volumes:
+      - ./logs/dashboard:/var/log/dashboard-service
+      
+networks:
+  local-docker-network:
+    external: true
+    name: local-docker-network

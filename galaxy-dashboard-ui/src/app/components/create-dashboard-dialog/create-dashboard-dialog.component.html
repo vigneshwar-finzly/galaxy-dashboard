@@ -1,0 +1,490 @@
+<div class="create-dashboard-dialog">
+  <div class="dialog-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="fas fa-plus text-white"></i>
+      </div>
+      <h2 class="dialog-title">{{ mode === 'edit' ? 'Edit Dashboard' : 'Create Dashboard' }}</h2>
+    </div>
+    <button class="close-button" (click)="onCancel()" type="button">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="dialog-content">
+    <form (ngSubmit)="createDashboard()" class="dashboard-form" [class.dropdown-active]="isAnyDropdownOpen">
+      
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <div class="form-fields-vertical">
+          <!-- Dashboard Name -->
+          <div class="form-field">
+            <label for="dashboardName" class="field-label">
+              Dashboard Name <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="dashboardName"
+              [(ngModel)]="dashboardName"
+              name="dashboardName"
+              maxlength="50"
+              class="form-input"
+              placeholder="Enter dashboard name"
+              required>
+            <div class="char-count">{{ dashboardName.length || 0 }}/50</div>
+          </div>
+          
+          <!-- Dashboard Description -->
+          <div class="form-field">
+            <label for="dashboardDescription" class="field-label">
+              Description
+            </label>
+            <textarea
+              id="dashboardDescription"
+              [(ngModel)]="dashboardDescription"
+              name="dashboardDescription"
+              rows="3"
+              maxlength="100"
+              class="form-textarea"
+              placeholder="Describe what this dashboard will display..."></textarea>
+            <div class="char-count">{{ dashboardDescription.length || 0 }}/100</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Divider -->
+      <div class="section-divider"></div>
+
+      <!-- Access Control Section -->
+      <div class="form-section">
+        <div class="access-control-grid">
+          
+          <!-- Viewers Column -->
+          <div class="access-column">
+            <div class="column-header">
+              <div class="header-icon-small viewers">
+                <i class="fas fa-eye"></i>
+              </div>
+              <h3 class="column-title">Viewers</h3>
+            </div>
+          
+            <div class="sharing-options">
+              <!-- Sharing Type Selection -->
+              <div class="option-grid">
+                <div class="sharing-option" 
+                   [class.selected]="viewer === 'Private'"
+                   (click)="viewer = 'Private'; onViewerChange();">
+                  <div class="option-icon">
+                    <i class="fas fa-lock"></i>
+                  </div>
+                  <span class="option-label">Private</span>
+                  <div class="option-check" *ngIf="viewer === 'Private'">
+                  </div>
+                </div>
+              
+                <div class="sharing-option" 
+                   [class.selected]="viewer === 'Global'"
+                   (click)="viewer = 'Global'; onViewerChange();">
+                  <div class="option-icon">
+                    <i class="fas fa-globe"></i>
+                  </div>
+                  <span class="option-label">Global</span>
+                  <div class="option-check" *ngIf="viewer === 'Global'">
+                  </div>
+                </div>
+              
+                <div class="sharing-option" 
+                   [class.selected]="viewer === 'Shared'"
+                   (click)="viewer = 'Shared'; onViewerChange();">
+                  <div class="option-icon">
+                    <i class="fas fa-users"></i>
+                  </div>
+                  <span class="option-label">Shared</span>
+                  <div class="option-check" *ngIf="viewer === 'Shared'">
+                  </div>
+                </div>
+              </div>
+
+              <!-- User and Department Selection for Shared -->
+              <div *ngIf="viewer === 'Shared'" class="shared-selection">
+                
+                <!-- Users Section -->
+                <div class="selection-section">
+                  <label class="selection-label">Users</label>
+                  <div class="selection-input-container" 
+                       #usersDropdown 
+                       id="usersDropdown" 
+                       [class.dropdown-open]="isUsersDropdownOpen">
+                    <input
+                      type="text"
+                      class="selection-input"
+                      [(ngModel)]="usersSearchTerm"
+                      (input)="filterUsers()"
+                      (click)="toggleDropdown('users')"
+                      name="userSearch"
+                      placeholder="Type 3+ characters to search users...">
+                    <i class="fas fa-chevron-down dropdown-icon" 
+                       [class.rotated]="isUsersDropdownOpen"></i>
+                    
+                    <!-- Users Dropdown -->
+                    <div *ngIf="isUsersDropdownOpen" class="dropdown-panel">
+                      <div class="dropdown-search">
+                        <i class="fas fa-search search-icon" *ngIf="!isSearchingUsers"></i>
+                        <i class="fas fa-spinner fa-spin search-icon" *ngIf="isSearchingUsers"></i>
+                        <input type="text" 
+                               class="search-input" 
+                               [(ngModel)]="usersSearchTerm" 
+                               (input)="filterUsers()" 
+                               name="userSearchDropdown" 
+                               placeholder="Type 3+ characters to search users...">
+                      </div>
+                      <div class="dropdown-list">
+                        <div *ngIf="isSearchingUsers" class="loading-message">
+                          <i class="fas fa-spinner fa-spin"></i>
+                          <span>Searching users...</span>
+                        </div>
+                        <div *ngFor="let user of filteredUsers; trackBy: trackById"
+                             class="dropdown-item"
+                             (click)="toggleSelection(user, 'user')">
+                          <div class="item-content">
+                            <div class="user-avatar"
+                                 [style.background]="getUserAvatarColor(user.userId)">
+                              {{ getUserInitials(user.userId) }}
+                            </div>
+                            <div class="item-info">
+                              <div class="item-name">{{ getUserDisplayName(user) }}</div>
+                              <div class="item-detail">{{ getUserSubtitle(user) }}</div>
+                            </div>
+                            <div class="item-selection">
+                              <i class="fas fa-check-circle selected" *ngIf="isSelected('user', user)"></i>
+                              <i class="far fa-circle unselected" *ngIf="!isSelected('user', user)"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngIf="filteredUsers.length === 0 && !isSearchingUsers" class="no-results">
+                          <div *ngIf="usersSearchTerm.length === 0">Type 3+ characters to search users</div>
+                          <div *ngIf="usersSearchTerm.length > 0 && usersSearchTerm.length < 3">Type {{ 3 - usersSearchTerm.length }} more character(s) to search</div>
+                          <div *ngIf="usersSearchTerm.length >= 3">No users found for "{{ usersSearchTerm }}"</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Selected Users Display -->
+                  <div *ngIf="selectedUsers.length > 0" class="selected-items">
+                    <div *ngFor="let user of selectedUsers; trackBy: trackById" 
+                         class="selected-chip">
+                      <div class="chip-avatar"
+                           [style.background]="getUserAvatarColor(user.userId)">
+                        {{ getUserInitials(user.userId) }}
+                      </div>
+                      <span class="chip-name">{{ getUserDisplayName(user) }}</span>
+                      <button type="button" 
+                              class="chip-remove"
+                              (click)="toggleSelection(user, 'user', $event)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Departments Section -->
+                <div class="selection-section">
+                  <label class="selection-label">Departments</label>
+                  <div class="selection-input-container" 
+                       #departmentsDropdown 
+                       id="departmentsDropdown" 
+                       [class.dropdown-open]="isDepartmentsDropdownOpen">
+                    <input
+                      type="text"
+                      class="selection-input"
+                      [(ngModel)]="departmentsSearchTerm"
+                      (input)="filterDepartments()"
+                      (click)="toggleDropdown('departments')"
+                      name="departmentSearch"
+                      placeholder="Search departments..."
+                      readonly>
+                    <i class="fas fa-chevron-down dropdown-icon" 
+                       [class.rotated]="isDepartmentsDropdownOpen"></i>
+                    
+                    <!-- Departments Dropdown -->
+                    <div *ngIf="isDepartmentsDropdownOpen" class="dropdown-panel">
+                      <div class="dropdown-search">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" 
+                               class="search-input" 
+                               [(ngModel)]="departmentsSearchTerm" 
+                               (input)="filterDepartments()" 
+                               name="departmentSearchDropdown" 
+                               placeholder="Search departments...">
+                      </div>
+                      <div class="dropdown-list">
+                        <div *ngFor="let dept of filteredDepartments; trackBy: trackById"
+                             class="dropdown-item"
+                             (click)="toggleSelection(dept, 'department')">
+                          <div class="item-content">
+                            <div class="dept-icon">
+                              <i class="fas fa-building"></i>
+                            </div>
+                            <div class="item-info">
+                              <div class="item-name">{{ dept.name }}</div>
+                              <div class="item-detail">{{ dept.description }}</div>
+                            </div>
+                            <div class="item-selection">
+                              <i class="fas fa-check-circle selected" *ngIf="isSelected('department', dept)"></i>
+                              <i class="far fa-circle unselected" *ngIf="!isSelected('department', dept)"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngIf="filteredDepartments.length === 0" class="no-results">
+                          No departments found
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Selected Departments Display -->
+                  <div *ngIf="selectedDepartments.length > 0" class="selected-items">
+                    <div *ngFor="let dept of selectedDepartments; trackBy: trackById" 
+                         class="selected-chip">
+                      <div class="chip-icon">
+                        <i class="fas fa-building"></i>
+                      </div>
+                      <span class="chip-name">{{ dept.name }}</span>
+                      <button type="button" 
+                              class="chip-remove"
+                              (click)="toggleSelection(dept, 'department', $event)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Editors Column -->
+          <div class="access-column" [class.disabled]="isEditorsDisabled">
+            <div class="column-header">
+              <div class="header-icon-small editors">
+                <i class="fas fa-edit"></i>
+              </div>
+              <h3 class="column-title">Editors</h3>
+            </div>
+            
+            <div class="sharing-options">
+              <!-- Editor Sharing Type Selection -->
+              <div class="option-grid">
+                <div class="sharing-option" 
+                     [class.selected]="editor === 'Private'"
+                     [class.disabled]="isEditorsDisabled"
+                     (click)="!isEditorsDisabled && (editor = 'Private') && onEditorChange();">
+                  <div class="option-icon">
+                    <i class="fas fa-lock"></i>
+                  </div>
+                  <span class="option-label">Private</span>
+                  <div class="option-check" *ngIf="editor === 'Private'">
+                  </div>
+                </div>
+                
+                <div class="sharing-option" 
+                     [class.selected]="editor === 'Global'"
+                     [class.disabled]="isEditorsDisabled"
+                     (click)="!isEditorsDisabled && (editor = 'Global') && onEditorChange();">
+                  <div class="option-icon">
+                    <i class="fas fa-globe"></i>
+                  </div>
+                  <span class="option-label">Global</span>
+                  <div class="option-check" *ngIf="editor === 'Global'">
+                  </div>
+                </div>
+                
+                <div class="sharing-option" 
+                     [class.selected]="editor === 'Shared'"
+                     [class.disabled]="isEditorsDisabled"
+                     (click)="!isEditorsDisabled && (editor = 'Shared') && onEditorChange();">
+                  <div class="option-icon">
+                    <i class="fas fa-users"></i>
+                  </div>
+                  <span class="option-label">Shared</span>
+                  <div class="option-check" *ngIf="editor === 'Shared'">
+                  </div>
+                </div>
+              </div>
+              
+              <!-- User and Department Selection for Shared Editors -->
+              <div *ngIf="editor === 'Shared' && !isEditorsDisabled" class="shared-selection">
+                
+                <!-- Editor Users Section -->
+                <div class="selection-section">
+                  <label class="selection-label">Users</label>
+                  <div class="selection-input-container" 
+                       #editorsUsersDropdown 
+                       id="editorsUsersDropdown" 
+                       [class.dropdown-open]="isEditorsUsersDropdownOpen">
+                    <input
+                      type="text"
+                      class="selection-input"
+                      [(ngModel)]="editorsUsersSearchTerm"
+                      (input)="filterEditors()"
+                      (click)="toggleDropdown('editorsUsers')"
+                      name="editorUserSearch"
+                      placeholder="Type 3+ characters to search users...">
+                    <i class="fas fa-chevron-down dropdown-icon" 
+                       [class.rotated]="isEditorsUsersDropdownOpen"></i>
+                    
+                    <!-- Editor Users Dropdown -->
+                    <div *ngIf="isEditorsUsersDropdownOpen" class="dropdown-panel">
+                      <div class="dropdown-search">
+                        <i class="fas fa-search search-icon" *ngIf="!isSearchingEditorUsers"></i>
+                        <i class="fas fa-spinner fa-spin search-icon" *ngIf="isSearchingEditorUsers"></i>
+                        <input type="text" 
+                               class="search-input" 
+                               [(ngModel)]="editorsUsersSearchTerm" 
+                               (input)="filterEditors()" 
+                               name="editorUserSearchDropdown" 
+                               placeholder="Type 3+ characters to search users...">
+                      </div>
+                      <div class="dropdown-list">
+                        <div *ngIf="isSearchingEditorUsers" class="loading-message">
+                          <i class="fas fa-spinner fa-spin"></i>
+                          <span>Searching users...</span>
+                        </div>
+                        <div *ngFor="let user of filteredEditorUsers; trackBy: trackById"
+                             class="dropdown-item"
+                             (click)="toggleSelection(user, 'editorUser')">
+                          <div class="item-content">
+                            <div class="user-avatar"
+                                 [style.background]="getUserAvatarColor(user.userId)">
+                              {{ getUserInitials(user.userId) }}
+                            </div>
+                            <div class="item-info">
+                              <div class="item-name">{{ getUserDisplayName(user) }}</div>
+                              <div class="item-detail">{{ getUserSubtitle(user) }}</div>
+                            </div>
+                            <div class="item-selection">
+                              <i class="fas fa-check-circle selected" *ngIf="isSelected('editorUser', user)"></i>
+                              <i class="far fa-circle unselected" *ngIf="!isSelected('editorUser', user)"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngIf="filteredEditorUsers.length === 0 && !isSearchingEditorUsers" class="no-results">
+                          <div *ngIf="editorsUsersSearchTerm.length === 0">Type 3+ characters to search users</div>
+                          <div *ngIf="editorsUsersSearchTerm.length > 0 && editorsUsersSearchTerm.length < 3">Type {{ 3 - editorsUsersSearchTerm.length }} more character(s) to search</div>
+                          <div *ngIf="editorsUsersSearchTerm.length >= 3">No users found for "{{ editorsUsersSearchTerm }}"</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Selected Editor Users Display -->
+                  <div *ngIf="selectedEditorUsers.length > 0" class="selected-items">
+                    <div *ngFor="let user of selectedEditorUsers; trackBy: trackById" 
+                         class="selected-chip">
+                      <div class="chip-avatar"
+                           [style.background]="getUserAvatarColor(user.userId)">
+                        {{ getUserInitials(user.userId) }}
+                      </div>
+                      <span class="chip-name">{{ getUserDisplayName(user) }}</span>
+                      <button type="button" 
+                              class="chip-remove"
+                              (click)="toggleSelection(user, 'editorUser', $event)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Editor Departments Section -->
+                <div class="selection-section">
+                  <label class="selection-label">Departments</label>
+                  <div class="selection-input-container" 
+                       #editorsDepartmentsDropdown 
+                       id="editorsDepartmentsDropdown" 
+                       [class.dropdown-open]="isEditorsDepartmentsDropdownOpen">
+                    <input
+                      type="text"
+                      class="selection-input"
+                      [(ngModel)]="editorsDepartmentsSearchTerm"
+                      (input)="filterEditors()"
+                      (click)="toggleDropdown('editorsDepartments')"
+                      name="editorDepartmentSearch"
+                      placeholder="Search departments..."
+                      readonly>
+                    <i class="fas fa-chevron-down dropdown-icon" 
+                       [class.rotated]="isEditorsDepartmentsDropdownOpen"></i>
+                    
+                    <!-- Editor Departments Dropdown -->
+                    <div *ngIf="isEditorsDepartmentsDropdownOpen" class="dropdown-panel">
+                      <div class="dropdown-search">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" 
+                               class="search-input" 
+                               [(ngModel)]="editorsDepartmentsSearchTerm" 
+                               (input)="filterEditors()" 
+                               name="editorDepartmentSearchDropdown" 
+                               placeholder="Search departments...">
+                      </div>
+                      <div class="dropdown-list">
+                        <div *ngFor="let dept of filteredEditorDepartments; trackBy: trackById"
+                             class="dropdown-item"
+                             (click)="toggleSelection(dept, 'editorDepartment')">
+                          <div class="item-content">
+                            <div class="dept-icon">
+                              <i class="fas fa-building"></i>
+                            </div>
+                            <div class="item-info">
+                              <div class="item-name">{{ dept.name }}</div>
+                              <div class="item-detail">{{ dept.description }}</div>
+                            </div>
+                            <div class="item-selection">
+                              <i class="fas fa-check-circle selected" *ngIf="isSelected('editorDepartment', dept)"></i>
+                              <i class="far fa-circle unselected" *ngIf="!isSelected('editorDepartment', dept)"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngIf="filteredEditorDepartments.length === 0" class="no-results">
+                          No departments found
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Selected Editor Departments Display -->
+                  <div *ngIf="selectedEditorDepartments.length > 0" class="selected-items">
+                    <div *ngFor="let dept of selectedEditorDepartments; trackBy: trackById" 
+                         class="selected-chip">
+                      <div class="chip-icon">
+                        <i class="fas fa-building"></i>
+                      </div>
+                      <span class="chip-name">{{ dept.name }}</span>
+                      <button type="button" 
+                              class="chip-remove"
+                              (click)="toggleSelection(dept, 'editorDepartment', $event)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Dialog Footer -->
+  <div class="dialog-footer">
+    <button type="button" class="btn-secondary" (click)="onCancel()">
+      Cancel
+    </button>
+    <button type="submit" 
+            [disabled]="!dashboardName.trim()"
+            class="btn-primary"
+            (click)="createDashboard()">
+      <i class="fas" [class.fa-plus]="mode === 'create'" [class.fa-save]="mode === 'edit'"></i>
+      <span>{{ mode === 'edit' ? 'Update Dashboard' : 'Create Dashboard' }}</span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,333 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Modern Header Section -->
+  <div class="sticky top-3 z-50 theme-surface-backdrop border-b theme-border shadow-sm" style="margin-left: 30px; margin-right: 30px; border-radius: 12px;">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 text-white bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
+          <mat-icon class="text-white text-sm">settings</mat-icon>
+        </div>
+        <div>
+          <h1 class="text-xl font-semibold theme-text-primary">Manage Dashboard</h1>
+          <p class="text-gray-600 text-sm">Add and remove widgets from your dashboards</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left Panel - Dashboards -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            <div class="p-6">
+              
+              <!-- Dashboard Selection Header -->
+              <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center space-x-2">
+                  <div class="w-8 h-8 text-white bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                    <mat-icon class="text-white text-sm">dashboard</mat-icon>
+                  </div>
+                  <span>Dashboards</span>
+                </h3>
+                
+                <div class="space-y-3 max-h-100 overflow-y-auto">
+                  <div *ngFor="let dashboard of availableDashboards" class="relative">
+                    <input 
+                      type="radio" 
+                      [id]="'dashboard-' + dashboard.id"
+                      name="dashboard"
+                      [value]="dashboard.id.toString()"
+                      [(ngModel)]="selectedDashboard"
+                      (change)="onDashboardSelectionChange()"
+                      class="sr-only">
+                    <label 
+                      [for]="'dashboard-' + dashboard.id"
+                      class="block p-4 border-2 border-gray-200 rounded-xl cursor-pointer transition-all duration-200 hover:border-indigo-300 hover:shadow-md group"
+                      [class.border-indigo-500]="selectedDashboard === dashboard.id"
+                      [class.bg-indigo-50]="selectedDashboard === dashboard.id"
+                      [class.shadow-md]="selectedDashboard === dashboard.id">
+                      
+                      <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0">
+                          <div class="w-5 h-5 border-2 rounded-full flex items-center justify-center transition-all duration-200"
+                               [class.border-indigo-500]="selectedDashboard === dashboard.id"
+                               [class.bg-indigo-500]="selectedDashboard === dashboard.id"
+                               [class.border-gray-300]="selectedDashboard !== dashboard.id">
+                            <div *ngIf="selectedDashboard === dashboard.id" 
+                                 class="w-2 h-2 bg-white rounded-full"></div>
+                          </div>
+                        </div>
+                        
+                        <div class="flex-1 min-w-0">
+                          <h4 class="font-semibold text-gray-900 text-sm truncate">
+                            {{ dashboard.name }}
+                          </h4>
+                          <div class="flex items-center flex-wrap gap-2 mt-2">
+                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 text-gray-600">
+                              <mat-icon class="mr-1 text-xs">bar_chart</mat-icon>
+                              {{ dashboard.totalWidgets || 0 }} widgets
+                            </span>
+                            
+                            <!-- Default Badge -->
+                            <span *ngIf="dashboard.isDefault" 
+                                  class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-amber-100 text-amber-800 font-medium shadow-sm">
+                              Default
+                            </span>
+                            
+                            <!-- Viewer Type Badges -->
+                            <span *ngIf="dashboard.viewerType === 'PRIVATE'" 
+                                  class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-blue-100 text-blue-800 font-medium shadow-sm">
+                              Private
+                            </span>
+                            <span *ngIf="dashboard.viewerType === 'GLOBAL'" 
+                                  class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-green-100 text-green-800 font-medium shadow-sm">
+                              Global
+                            </span>
+                            <span *ngIf="dashboard.viewerType === 'USERS'" 
+                                  class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-purple-100 text-purple-800 font-medium shadow-sm">
+                              Shared
+                            </span>
+                            <span *ngIf="dashboard.viewerType === 'DEPARTMENT'" 
+                                  class="inline-flex items-center px-3 py-1.5 rounded-full text-xs bg-indigo-100 text-indigo-800 font-medium shadow-sm">
+                              Department
+                            </span>
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+  
+                  <!-- No Dashboards Message -->
+                  <div *ngIf="availableDashboards.length === 0 && !isLoading" 
+                       class="text-center py-12 text-gray-500">
+                    <mat-icon class="text-4xl mb-4 opacity-50">inbox</mat-icon>
+                    <p class="text-sm">No dashboards available</p>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+          </div>
+        </div>
+  
+        <!-- Right Panel - Available Widgets -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            
+            <!-- Available Widgets Section -->
+            <div class="p-6">
+              
+              <!-- Header with Actions and Data Source Filter -->
+              <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 class="text-lg font-semibold text-gray-900 flex items-center space-x-3">
+                      <mat-icon class="text-indigo-600">bar_chart</mat-icon>
+                      <span>Available Widgets</span>
+                      <span class="text-xs px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 font-medium">
+                        {{ filteredWidgets.length }}
+                      </span>
+                    </h2>
+                    <p class="text-gray-600 text-sm mt-1">
+                      Check widgets to add to dashboard, uncheck to remove
+                    </p>
+                  </div>
+                  
+
+                </div>
+  
+                <!-- Data Source Filter -->
+                <div class="mb-4">
+                  <label class="text-sm font-medium text-gray-700 mb-2 block">Filter by Data Source</label>
+                  <div class="flex flex-wrap gap-2">
+                    <div *ngFor="let dataSource of dataSources" class="relative">
+                      <input 
+                        type="radio" 
+                        [id]="'datasource-' + dataSource.value"
+                        name="dataSource"
+                        [value]="dataSource.value"
+                        [(ngModel)]="selectedDataSource"
+                        (change)="onDataSourceFilterChange()"
+                        class="sr-only">
+                      <label 
+                        [for]="'datasource-' + dataSource.value"
+                        class="flex items-center px-3 py-2 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-gray-300 hover:shadow-sm"
+                        [class.border-gray-400]="selectedDataSource === dataSource.value"
+                        [class.bg-gray-50]="selectedDataSource === dataSource.value"
+                        [class.text-gray-900]="selectedDataSource === dataSource.value"
+                        [class.text-gray-700]="selectedDataSource !== dataSource.value">
+                        
+                        <div class="w-6 h-6 rounded-lg flex items-center justify-center mr-3 text-white"
+                             [style.background-color]="getDataSourceColor(dataSource.value)">
+                          <mat-icon class="text-white text-sm">{{ getDataSourceIcon(dataSource.value) }}</mat-icon>
+                        </div>
+                        
+                        <span class="text-sm font-medium">{{ dataSource.name }}</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Search Bar -->
+              <div class="mb-6">
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <mat-icon class="text-gray-400">search</mat-icon>
+                  </div>
+                  <input 
+                    type="text" 
+                    [(ngModel)]="searchTerm"
+                    placeholder="Search widgets by name, description, data source..."
+                    class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200">
+                  
+                  <!-- Clear Search Button -->
+                  <button *ngIf="searchTerm" 
+                          (click)="searchTerm = ''"
+                          class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              </div>
+  
+              <!-- Widget Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" style="max-height: 60vh; overflow-y: auto;">
+                <div *ngFor="let widget of filteredWidgets" class="group relative">
+                  <input 
+                    type="checkbox" 
+                    [id]="'widget-' + widget.id"
+                    [checked]="isWidgetInDashboard(widget.id)"
+                    (change)="toggleWidgetInDashboard(widget.id)"
+                    class="sr-only">
+                  
+                  <label 
+                    [for]="'widget-' + widget.id"
+                    class="flex flex-col h-full p-5 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-gray-300 hover:shadow-sm group"
+                    [class.border-indigo-400]="isWidgetInDashboard(widget.id)"
+                    [class.bg-indigo-50]="isWidgetInDashboard(widget.id)"
+                    [class.shadow-md]="isWidgetInDashboard(widget.id)">
+                    
+                    <!-- Widget Header -->
+                    <div class="flex items-start justify-between mb-3">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center space-x-2">
+                          <h3 class="font-semibold text-gray-900 text-base line-clamp-1 group-hover:text-indigo-700 transition-colors duration-200 flex-1">
+                            {{ widget.name }}
+                          </h3>
+                          <!-- Widget Summary Info Icon -->
+                          <!-- <button 
+                            type="button"
+                            class="text-gray-400 hover:text-indigo-600 transition-colors duration-200 flex-shrink-0"
+                            [title]="getWidgetSummary(widget)"
+                            (click)="$event.stopPropagation()">
+                            <mat-icon class="text-sm">info_outline</mat-icon>
+                          </button> -->
+                        </div>
+                      </div>
+                      
+                      <!-- Selection Indicator -->
+                      <div class="flex-shrink-0 ml-3">
+                        <div class="w-5 h-5 border-2 text-white border-gray-300 rounded-md flex items-center justify-center transition-all duration-200"
+                             [class.border-indigo-500]="isWidgetInDashboard(widget.id)"
+                             [class.bg-indigo-500]="isWidgetInDashboard(widget.id)">
+                          <mat-icon *ngIf="isWidgetInDashboard(widget.id)" 
+                                   class="text-white text-xs">check</mat-icon>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Widget Info -->
+                    <div class="flex-1 mb-4">
+                      <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed mt-2">
+                        {{ widget.description || 'No description available' }}
+                      </p>
+                    </div>
+                    
+                    <!-- Widget Metadata -->
+                    <div class="mt-auto space-y-3">
+                      <div class="flex items-center flex-wrap gap-2">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-800 font-medium">
+                          {{ widget.dataSource }}
+                        </span>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-800 font-medium"
+                              [title]="widget.chartType">
+                          <mat-icon class="text-purple-900 text-sm">{{ getChartTypeIcon(widget.chartType) }}</mat-icon>
+                        </span>
+                      </div>
+                      
+                      <div class="flex items-center justify-between pt-3 border-t border-gray-200">
+                        <span class="text-xs text-gray-500">
+                          {{ formatDate(widget.createdDateTime) }}
+                        </span>
+                        
+                        <span *ngIf="isWidgetInDashboard(widget.id)" 
+                              class="inline-flex items-center text-xs font-semibold px-3 py-1 rounded-full bg-indigo-100 text-indigo-800">
+                          In Use
+                        </span>
+                        
+                        <span *ngIf="!isWidgetInDashboard(widget.id)" 
+                              class="inline-flex items-center text-xs font-medium px-3 py-1 rounded-full bg-gray-100 text-gray-600">
+                          <mat-icon class="mr-1 text-xs">add</mat-icon>
+                          Click to Add
+                        </span>
+                      </div>
+                    </div>
+  
+                  </label>
+                </div>
+              </div>
+  
+              <!-- No Results -->
+              <div *ngIf="filteredWidgets.length === 0 && !isLoading" class="text-center py-16">
+                <div class="w-24 h-24 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                  <mat-icon class="text-4xl text-gray-400">search</mat-icon>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">No widgets found</h3>
+                <p class="text-gray-600 mb-6">Try adjusting your search or data source filter</p>
+                <button (click)="searchTerm = ''; selectedDataSource = 'all'" 
+                        class="px-6 py-3 rounded-xl font-medium text-white bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all duration-200">
+                  <mat-icon class="mr-2">refresh</mat-icon>
+                  Reset Filters
+                </button>
+              </div>
+  
+              <!-- Status Bar -->
+              <div *ngIf="selectedDashboard" class="flex items-center justify-between pt-6 border-t border-gray-200">
+                <div class="flex items-center space-x-3">
+                  <span class="text-sm text-gray-600">
+                    {{ getWidgetCountInDashboard() }} widget{{ getWidgetCountInDashboard() !== 1 ? 's' : '' }} in dashboard
+                  </span>
+                  <div class="w-2 h-2 rounded-full bg-gray-300"></div>
+                  <span class="text-sm text-gray-600">
+                    {{ filteredWidgets.length }} available
+                  </span>
+                </div>
+                
+                <div class="text-sm text-gray-500">
+                  <mat-icon class="mr-1 text-sm">info</mat-icon>
+                  Click widgets to add/remove
+                </div>
+              </div>
+            </div>
+  
+          </div>
+        </div>
+      </div>
+  
+      <!-- Loading Overlay -->
+      <div *ngIf="isLoading" class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-white backdrop-blur-xl rounded-xl p-6 shadow-xl border border-gray-200">
+          <div class="flex items-center space-x-3">
+            <div class="relative">
+              <div class="w-6 h-6 border-3 border-gray-200 rounded-full"></div>
+              <div class="w-6 h-6 border-3 border-t-indigo-500 rounded-full animate-spin absolute top-0 left-0"></div>
+            </div>
+            <span class="text-gray-900 font-medium">Processing...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

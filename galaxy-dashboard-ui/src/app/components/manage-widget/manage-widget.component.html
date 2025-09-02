@@ -1,0 +1,312 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Modern Header Section -->
+  <div class="sticky top-3 z-50 theme-surface-backdrop border-b theme-border shadow-sm" style="margin-left: 30px; margin-right: 30px; border-radius: 12px;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 text-white bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+            <mat-icon class="text-white text-sm">widgets</mat-icon>
+          </div>
+          <div>
+            <h1 class="text-xl font-semibold theme-text-primary">Widget Management</h1>
+            <p class="text-gray-600 text-sm">Create, edit, and organize your dashboard widgets</p>
+          </div>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="flex items-center bg-gray-100 rounded-lg p-1 relative z-10">
+          <button 
+            (click)="switchTab('manage')"
+            [disabled]="isLoading"
+            [class.bg-white]="activeTab === 'manage'"
+            [class.shadow-sm]="activeTab === 'manage'"
+            [class.text-purple-600]="activeTab === 'manage'"
+            [class.text-gray-600]="activeTab !== 'manage'"
+            class="tab-button micro-bounce px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <mat-icon class="text-sm">list</mat-icon>
+            <span>Manage</span>
+          </button>
+          
+          <button 
+            (click)="switchTab('create')"
+            [disabled]="isLoading"
+            [class.bg-white]="activeTab === 'create'"
+            [class.shadow-sm]="activeTab === 'create'"
+            [class.text-purple-600]="activeTab === 'create'"
+            [class.text-gray-600]="activeTab !== 'create'"
+            class="tab-button micro-bounce px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <mat-icon class="text-sm">add</mat-icon>
+            <span>Create</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    
+    <!-- Manage Tab -->
+    <div *ngIf="activeTab === 'manage'" class="space-y-6">
+      
+      <!-- Simplified Filters -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div class="flex items-center justify-between space-x-6">
+          
+          <!-- Search Bar -->
+          <div class="flex-1 relative z-10">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-20">
+              <mat-icon class="text-gray-400 text-sm">search</mat-icon>
+            </div>
+            <input 
+              type="text" 
+              [(ngModel)]="searchTerm"
+              (input)="onSearchChange()"
+              [disabled]="isLoading"
+              placeholder="Search widgets..."
+              class="search-input w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:bg-white transition-colors duration-200">
+          </div>
+
+          <!-- Data Source Filter -->
+          <div class="min-w-0 flex-shrink-0 relative z-10">
+            <select 
+              [(ngModel)]="selectedDataSource"
+              (change)="onDataSourceFilterChange()"
+              [disabled]="isLoading"
+              class="px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 text-sm font-medium min-w-[140px] cursor-pointer hover:border-purple-400">
+              <option value="all">All Sources</option>
+              <option *ngFor="let source of dataSources.slice(1)" [value]="source.value">{{ source.name }}</option>
+            </select>
+          </div>
+
+          <!-- Chart Type Filter -->
+          <div class="min-w-0 flex-shrink-0 relative z-10">
+            <select 
+              [(ngModel)]="selectedChartType"
+              (change)="onChartTypeFilterChange()"
+              [disabled]="isLoading"
+              class="px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200 text-sm font-medium min-w-[140px] cursor-pointer hover:border-purple-400">
+              <option value="all">All Types</option>
+              <option *ngFor="let type of chartTypes.slice(1)" [value]="type.value">{{ type.name }}</option>
+            </select>
+          </div>
+
+          <!-- Filter Count -->
+          <div *ngIf="getFilterChipCount() > 0" 
+               class="text-sm text-purple-600 font-medium bg-purple-50 px-3 py-2 rounded-lg">
+            {{ getFilterChipCount() }} filter{{ getFilterChipCount() !== 1 ? 's' : '' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Widget Grid -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="p-6">
+          
+          <!-- Grid Header -->
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center space-x-3">
+                <mat-icon class="text-purple-600">widgets</mat-icon>
+                <span>Widgets ({{ filteredWidgets.length }})</span>
+              </h2>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="flex items-center space-x-4 text-sm">
+              <div class="flex items-center space-x-2 text-green-600">
+                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>{{ inUseWidgetCount }} in use</span>
+              </div>
+              <div class="flex items-center space-x-2 text-gray-500">
+                <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                <span>{{ unusedWidgetCount }} unused</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Widget Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" style="max-height: 70vh; overflow-y: auto; padding: 4px;">
+            <div *ngFor="let widget of filteredWidgets" class="group relative">
+              <div class="flex flex-col h-full p-5 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 hover:border-gray-300 hover:shadow-sm group bg-white"
+                   [class.border-purple-400]="false"
+                   [class.bg-purple-50]="false"
+                   [class.shadow-md]="false">
+                
+                <!-- Widget Header -->
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center space-x-2">
+                      <h3 class="font-semibold text-gray-900 text-base line-clamp-1 group-hover:text-purple-700 transition-colors duration-200 flex-1">
+                        {{ widget.name }}
+                      </h3>
+                    </div>
+                  </div>
+                  
+                  <!-- Chart Type Icon -->
+                  <div class="flex-shrink-0 ml-3">
+                    <div class="w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center"
+                         [title]="widget.chartType">
+                      <mat-icon class="text-white text-sm">{{ getChartTypeIcon(widget.chartType) }}</mat-icon>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Widget Description -->
+                <div class="flex-1 mb-4">
+                  <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                    {{ widget.description || 'No description available' }}
+                  </p>
+                </div>
+                
+                <!-- Widget Metadata -->
+                <div class="mt-auto space-y-3">
+                  <div class="flex items-center flex-wrap gap-2">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-blue-100 text-blue-800 font-medium">
+                      {{ widget.dataSource }}
+                    </span>
+                    
+                    <!-- Usage Status -->
+                    <span *ngIf="isWidgetInUse(widget.id)" 
+                          class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-emerald-100 text-emerald-800 font-medium">
+                      <div class="w-2 h-2 bg-emerald-500 rounded-full mr-1"></div>
+                      In Use
+                    </span>
+                    
+                    <span *ngIf="!isWidgetInUse(widget.id)" 
+                          class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-gray-100 text-gray-600 font-medium">
+                      <div class="w-2 h-2 bg-gray-400 rounded-full mr-1"></div>
+                      Not in Use
+                    </span>
+                  </div>
+                  
+                  <div class="flex items-center justify-between pt-3 border-t border-gray-200">
+                    <span class="text-xs text-gray-500">
+                      {{ formatDate(widget.createdDateTime) }}
+                    </span>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex items-center space-x-2">
+                      <!-- Edit Button -->
+                      <button 
+                        (click)="editWidget(widget); $event.stopPropagation()" 
+                        title="Edit Widget" 
+                        class="w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center hover:bg-blue-600 transition-all duration-200">
+                        <mat-icon class="text-white text-lg">mode_edit</mat-icon>
+                      </button>
+                      
+                      <!-- Delete Button -->
+                      <button 
+                        (click)="deleteWidget(widget); $event.stopPropagation()" 
+                        title="Delete Widget" 
+                        class="w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition-all duration-200">
+                        <mat-icon class="text-white text-lg">delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- No Results -->
+          <div *ngIf="filteredWidgets.length === 0 && !isLoading" class="empty-state text-center py-12 relative">
+            <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <mat-icon class="text-2xl text-gray-400">search</mat-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No widgets found</h3>
+            <p class="text-gray-600 mb-4">Try adjusting your search or filter criteria</p>
+            <button (click)="clearAllFilters()" 
+                    class="micro-glow px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200">
+              Reset Filters
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Tab -->
+    <div *ngIf="activeTab === 'create'" class="tab-content bg-white rounded-xl shadow-sm border border-gray-200 p-6" style="position: relative; z-index: 10; overflow: visible; padding: 0; border: none;">
+      <app-widget-creator
+        [isEditing]="false"
+        (widgetCreated)="onWidgetCreated($event)"
+        (cancelled)="switchTab('manage')"
+        style="position: relative; z-index: 20; pointer-events: auto;">
+      </app-widget-creator>
+    </div>
+
+    <!-- Edit Tab -->
+    <div *ngIf="activeTab === 'edit'" class="tab-content bg-white rounded-xl shadow-sm border border-gray-200 p-6" style="position: relative; z-index: 10; overflow: visible; padding: 0; border: none;">
+      <app-widget-creator
+        [isEditing]="true"
+        [editingWidget]="editingWidget"
+        (widgetUpdated)="onWidgetUpdated($event)"
+        (cancelled)="switchTab('manage')"
+        style="position: relative; z-index: 20; pointer-events: auto;">
+      </app-widget-creator>
+    </div>
+  </div>
+
+  <!-- Add to Dashboard Popup -->
+  <!-- <div *ngIf="showAddToDashboardPopup" 
+       class="popup-overlay fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end justify-center z-50"
+       (click)="closeAddToDashboardPopup()">
+    <div class="popup-content bg-white rounded-t-2xl shadow-2xl border border-gray-200 w-full max-w-md transform transition-all duration-300 ease-out"
+         (click)="$event.stopPropagation()">
+      
+      <div class="p-6">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+            <mat-icon class="text-white text-lg">check</mat-icon>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900">Widget Created!</h3>
+            <p class="text-sm text-gray-600">{{ newlyCreatedWidget?.name }} has been created successfully</p>
+          </div>
+        </div>
+        
+        <p class="text-gray-700 mb-6">Do you want to add this widget to your current dashboard?</p>
+        
+        <div class="flex space-x-3">
+          <button 
+            (click)="addWidgetToCurrentDashboard()"
+            class="flex-1 bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-200 font-medium">
+            Yes, Add to Dashboard
+          </button>
+          <button 
+            (click)="closeAddToDashboardPopup()"
+            class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium">
+            No, Thanks
+          </button>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Loading Overlay (only show when actually loading) -->
+  <div *ngIf="isLoading" class="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-[9999] pointer-events-auto">
+    <div class="bg-white backdrop-blur-xl rounded-xl p-6 shadow-xl border border-gray-200">
+      <div class="flex items-center space-x-3">
+        <div class="relative">
+          <div class="w-6 h-6 border-2 border-gray-200 rounded-full"></div>
+          <div class="w-6 h-6 border-2 border-t-purple-500 rounded-full animate-spin absolute top-0 left-0"></div>
+        </div>
+        <span class="text-gray-900 font-medium">Processing...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+</style>

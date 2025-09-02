@@ -1,0 +1,251 @@
+<div class="widget-library-dialog">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="fas fa-store"></i>
+      </div>
+      <div class="header-text">
+        <h2 class="dialog-title">Widget Library</h2>
+        <p class="dialog-subtitle" *ngIf="data.currentDashboard">
+          Add widgets to <span class="dashboard-name">{{ data.currentDashboard.name }}</span>
+        </p>
+      </div>
+    </div>
+    <button class="close-button" type="button" (click)="close()" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Premium Statistics Bar -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <i class="fas fa-widgets"></i>
+      <div class="stat-content">
+        <div class="stat-number">{{ totalWidgets }}</div>
+        <div class="stat-label">Total Widgets</div>
+      </div>
+    </div>
+    <div class="stat-item" *ngIf="data.currentDashboard">
+      <i class="fas fa-plus-circle"></i>
+      <div class="stat-content">
+        <div class="stat-number">{{ availableInCurrentDashboard }}</div>
+        <div class="stat-label">Available to Add</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <i class="fas fa-chart-bar"></i>
+      <div class="stat-content">
+        <div class="stat-number">{{ inUseCount }}</div>
+        <div class="stat-label">In Use</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <i class="fas fa-filter"></i>
+      <div class="stat-content">
+        <div class="stat-number">{{ filteredCount }}</div>
+        <div class="stat-label">Filtered Results</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-content">
+    <!-- Compact Filters Section -->
+    <div class="filters-section">
+      <div class="filters-row">
+        <!-- Premium Search -->
+        <div class="search-container">
+          <div class="modern-label">
+            <i class="fas fa-search"></i>
+            Search Widgets
+          </div>
+          <i class="fas fa-search search-icon"></i>
+          <input 
+            type="text" 
+            placeholder="Search by name, description, or data source..." 
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange()"
+            class="search-input">
+          <button 
+            *ngIf="searchTerm" 
+            class="clear-search"
+            (click)="searchTerm = ''; onSearchChange()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Premium Data Source Filter -->
+        <div class="filter-select-container">
+          <div class="modern-label">
+            <i class="fas fa-database"></i>
+            Data Source
+          </div>
+          <div class="modern-select-wrapper">
+            <select 
+              [(ngModel)]="selectedDataSource"
+              (change)="onDataSourceChange()"
+              class="modern-select">
+              <option *ngFor="let source of dataSources" [value]="source.value">
+                {{ source.name }}
+              </option>
+            </select>
+            <i class="fas fa-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <!-- Premium Chart Type Filter -->
+        <div class="filter-select-container">
+          <div class="modern-label">
+            <i class="fas fa-chart-bar"></i>
+            Chart Type
+          </div>
+          <div class="modern-select-wrapper">
+            <select 
+              [(ngModel)]="selectedChartType"
+              (change)="onChartTypeChange()"
+              class="modern-select">
+              <option *ngFor="let type of chartTypes" [value]="type.value">
+                {{ type.name }}
+              </option>
+            </select>
+            <i class="fas fa-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <!-- Premium Available Only Toggle -->
+        <div class="filter-toggle-container" *ngIf="data.currentDashboard">
+          <div class="modern-label">
+            <i class="fas fa-eye"></i>
+            Availability
+          </div>
+          <label class="premium-toggle">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="showOnlyAvailable"
+              (change)="onAvailableOnlyChange()"
+              class="toggle-checkbox">
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Available Only</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+      </div>
+      <p class="loading-text">Loading widgets...</p>
+    </div>
+
+    <!-- Widgets Grid -->
+    <div *ngIf="!isLoading" class="widgets-grid">
+      <div *ngIf="filteredWidgets.length === 0" class="no-widgets-message">
+        <div class="no-widgets-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3>No widgets found</h3>
+        <p>Try adjusting your filters or search terms.</p>
+      </div>
+
+      <div 
+        *ngFor="let widget of filteredWidgets" 
+        class="widget-card"
+        [class.in-use]="widget.isInUse"
+        [class.in-current-dashboard]="isWidgetInCurrentDashboard(widget.id)">
+        
+        <!-- Widget Header -->
+        <div class="widget-header">
+          <div class="widget-icon" [ngClass]="'chart-icon-' + widget.chartType">
+            <i class="fas" [class]="'fa-' + getChartTypeIcon(widget.chartType)"></i>
+          </div>
+          <div class="widget-info">
+            <h4 class="widget-name">{{ widget.name }}</h4>
+            <p class="widget-description" *ngIf="widget.description">{{ widget.description }}</p>
+          </div>
+          
+          <!-- Usage Badge -->
+          <div class="usage-badges">
+            <span class="usage-badge in-current" *ngIf="isWidgetInCurrentDashboard(widget.id)">
+              <i class="fas fa-check-circle"></i>
+              In Use
+            </span>
+            <span class="usage-badge in-use" *ngIf="widget.isInUse && !isWidgetInCurrentDashboard(widget.id)">
+              <i class="fas fa-share-alt"></i>
+              Used {{ widget.usageCount }}x
+            </span>
+            <span class="usage-badge available" *ngIf="!widget.isInUse">
+              <i class="fas fa-plus-circle"></i>
+              Available
+            </span>
+          </div>
+        </div>
+
+        <!-- Widget Details -->
+        <div class="widget-details">
+          <div class="detail-item">
+            <i class="fas" [class]="'fa-' + getDataSourceIcon(widget.dataSource)"></i>
+            <span>{{ widget.dataSource }}</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-chart-bar"></i>
+            <span>{{ widget.chartType | titlecase }}</span>
+          </div>
+          <div class="detail-item" *ngIf="widget.refreshInterval">
+            <i class="fas fa-sync-alt"></i>
+            <span>{{ widget.refreshInterval }}s refresh</span>
+          </div>
+        </div>
+
+        <!-- Usage Details REMOVED FOR COMPACTNESS -->
+        
+        <!-- Action Buttons -->
+        <div class="widget-actions">
+          <button 
+            *ngIf="data.currentDashboard && !isWidgetInCurrentDashboard(widget.id)"
+            class="action-btn primary add-btn"
+            (click)="addWidgetToDashboard(widget)"
+            [disabled]="isAddingWidget">
+            <i class="fas fa-plus" *ngIf="!isAddingWidget"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isAddingWidget"></i>
+            <span>{{ isAddingWidget ? 'Adding...' : 'Add Widget' }}</span>
+          </button>
+          
+          <button 
+            *ngIf="isWidgetInCurrentDashboard(widget.id)"
+            class="action-btn disabled already-added-btn"
+            disabled>
+            <i class="fas fa-check"></i>
+            <span>Already in Dashboard</span>
+          </button>
+
+          <!-- Quick Preview Button (for future enhancement) -->
+          <button class="action-btn secondary preview-btn" title="Preview Widget">
+            <i class="fas fa-eye"></i>
+          </button>
+
+          <!-- Edit Button -->
+          <button class="action-btn secondary edit-btn" title="Edit Widget">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dialog-footer">
+    <div class="footer-info">
+      <span class="info-text">
+        Showing {{ filteredCount }} of {{ totalWidgets }} widgets
+      </span>
+    </div>
+    <div class="footer-actions">
+      <button class="btn secondary" (click)="close()">
+        <i class="fas fa-times"></i>
+        Close
+      </button>
+    </div>
+  </div>
+</div>

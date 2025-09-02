@@ -1,0 +1,258 @@
+<div class="edit-widget-dialog">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="fas fa-edit"></i>
+      </div>
+      <div class="header-text">
+        <h2 class="dialog-title">Edit Widget</h2>
+        <p class="dialog-subtitle">{{ widgetName || 'Unnamed Widget' }}</p>
+      </div>
+    </div>
+    <button class="close-button" type="button" (click)="close()" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+    </div>
+    <p class="loading-text">Loading widget data...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="dialog-content rail-layout">
+    <!-- Left Rail - Steps -->
+    <aside class="left-rail">
+      <div class="rail-stepper">
+        <div class="step-item" 
+             *ngFor="let step of steps; let i = index" 
+             [class.active]="i === stepIndex" 
+             [class.completed]="i < stepIndex" 
+             (click)="goToStep(i)">
+          <div class="step-indicator">
+            <div class="step-circle">
+              <i class="fas fa-check" *ngIf="i < stepIndex"></i>
+              <span *ngIf="i >= stepIndex">{{ i + 1 }}</span>
+            </div>
+            <div class="step-line" *ngIf="i < steps.length - 1"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">{{ step.label }}</div>
+            <div class="step-desc">{{ step.description }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Summary -->
+      <div class="ai-summary-panel">
+        <div class="summary-header">
+          <i class="fas fa-lightbulb"></i>
+          <span>AI Summary</span>
+        </div>
+        <div class="summary-content">
+          <p>{{ aiSummary }}</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Step 1: Data Source -->
+      <div *ngIf="stepIndex === 0" class="step-content data-source-step">
+        <div class="step-header">
+          <h3>Data Source</h3>
+          <p>Choose where your widget data comes from</p>
+        </div>
+        
+        <div class="data-sources-grid">
+          <div *ngFor="let source of dataSources" 
+               class="data-source-card"
+               [class.selected]="selectedDataSource === source"
+               (click)="selectDataSource(source)">
+            <div class="source-icon">
+              <i class="fas" [class]="'fa-' + source.icon"></i>
+            </div>
+            <div class="source-info">
+              <h4>{{ source.name }}</h4>
+              <p>{{ source.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Chart Type -->
+      <div *ngIf="stepIndex === 1" class="step-content chart-type-step">
+        <div class="step-header">
+          <h3>Chart Type</h3>
+          <p>Select how you want to visualize your data</p>
+        </div>
+        
+        <div class="chart-types-grid">
+          <div *ngFor="let type of chartTypes" 
+               class="chart-type-card"
+               [class.selected]="selectedChartType === type"
+               (click)="selectChartType(type)">
+            <div class="type-icon">
+              <i class="fas" [class]="'fa-' + type.icon"></i>
+            </div>
+            <div class="type-info">
+              <h4>{{ type.title }}</h4>
+              <p>{{ type.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Fields -->
+      <div *ngIf="stepIndex === 2" class="step-content fields-step">
+        <div class="step-header">
+          <h3>Fields Configuration</h3>
+          <p>Map your data fields for the selected chart type</p>
+        </div>
+        
+        <div class="fields-config-message">
+          <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <p>Field configuration interface would be implemented here based on the selected data source and chart type.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Filters -->
+      <div *ngIf="stepIndex === 3" class="step-content filters-step">
+        <div class="step-header">
+          <h3>Filters</h3>
+          <p>Add filters to refine your data (optional)</p>
+        </div>
+        
+        <div class="filters-config-message">
+          <div class="info-box">
+            <i class="fas fa-filter"></i>
+            <p>Filters interface would be implemented here to allow users to add data filters.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: Preview -->
+      <div *ngIf="stepIndex === 4" class="step-content preview-step">
+        <div class="step-header">
+          <h3>Preview</h3>
+          <p>Preview your widget before saving</p>
+        </div>
+        
+        <div class="preview-container">
+          <div class="preview-toolbar">
+            <button 
+              (click)="generatePreview()"
+              [disabled]="isLoadingPreview"
+              class="btn primary">
+              <i class="fas fa-eye" *ngIf="!isLoadingPreview"></i>
+              <i class="fas fa-spinner fa-spin" *ngIf="isLoadingPreview"></i>
+              Generate Preview
+            </button>
+          </div>
+          
+          <div class="preview-area">
+            <div *ngIf="isLoadingPreview" class="preview-loading">
+              <div class="spinner"></div>
+              <p>Generating preview...</p>
+            </div>
+            
+            <div *ngIf="!isLoadingPreview && previewData" class="preview-content">
+              <div class="preview-widget">
+                <h4>{{ widgetName }}</h4>
+                <p>{{ previewData.message }}</p>
+              </div>
+            </div>
+            
+            <div *ngIf="!isLoadingPreview && !previewData" class="preview-placeholder">
+              <i class="fas fa-chart-bar"></i>
+              <p>Click "Generate Preview" to see your widget</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 6: Save -->
+      <div *ngIf="stepIndex === 5" class="step-content save-step">
+        <div class="step-header">
+          <h3>Save Changes</h3>
+          <p>Review and save your widget changes</p>
+        </div>
+        
+        <div class="save-form">
+          <div class="form-group">
+            <label for="widget-name">Widget Name</label>
+            <input 
+              id="widget-name"
+              type="text" 
+              [(ngModel)]="widgetName"
+              class="form-input"
+              placeholder="Enter widget name">
+          </div>
+          
+          <div class="form-group">
+            <label for="widget-description">Description (Optional)</label>
+            <textarea 
+              id="widget-description"
+              [(ngModel)]="widgetDescription"
+              class="form-textarea"
+              rows="3"
+              placeholder="Enter widget description"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="refresh-interval">Refresh Interval (seconds)</label>
+            <input 
+              id="refresh-interval"
+              type="number" 
+              [(ngModel)]="refreshInterval"
+              class="form-input"
+              min="10"
+              max="3600">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dialog-footer" *ngIf="!isLoading">
+    <div class="footer-actions">
+      <button 
+        class="btn secondary" 
+        (click)="prevStep()"
+        [disabled]="stepIndex === 0">
+        <i class="fas fa-arrow-left"></i>
+        Previous
+      </button>
+      
+      <button 
+        *ngIf="stepIndex < steps.length - 1"
+        class="btn primary" 
+        (click)="nextStep()"
+        [disabled]="!canProceedToNext()">
+        Next
+        <i class="fas fa-arrow-right"></i>
+      </button>
+      
+      <button 
+        *ngIf="stepIndex === steps.length - 1"
+        class="btn success" 
+        (click)="saveChanges()"
+        [disabled]="isSaving || !widgetName.trim()">
+        <i class="fas fa-save" *ngIf="!isSaving"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="isSaving"></i>
+        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+      </button>
+      
+      <button class="btn secondary" (click)="close()">
+        <i class="fas fa-times"></i>
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

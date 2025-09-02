@@ -1,0 +1,101 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.finzly.enterprise</groupId>
+    <artifactId>finzly-pom</artifactId>
+    <version>3.0.0</version>
+  </parent>
+
+  <groupId>com.finzly.bankos.dashboard</groupId>
+  <artifactId>galaxy-dashboard</artifactId>
+  <version>6.2.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>galaxy-dashboard</name>
+  <description>Galaxy Dashboard Parent</description>
+
+  <properties>
+    <finzly-bom.version>3.0.0</finzly-bom.version>
+    <galaxy-common-sdk.version>6.2.0.0-SNAPSHOT</galaxy-common-sdk.version>
+    <galaxy-staticdata-client.version>6.2.0.0-SNAPSHOT</galaxy-staticdata-client.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+<!--      <dependency>-->
+<!--        <groupId>com.finzly.bankos</groupId>-->
+<!--        <artifactId>bankos-i18n-sdk</artifactId>-->
+<!--        <version>${galaxy-common-sdk.version}</version>-->
+<!--      </dependency>-->
+      <dependency>
+        <groupId>com.finzly.enterprise.bankos</groupId>
+        <artifactId>finzly-bom</artifactId>
+        <version>${finzly-bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.finzly.bankos.dashboard</groupId>
+        <artifactId>galaxy-dashboard-ui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.finzly.bankos.dashboard</groupId>
+        <artifactId>galaxy-dashboard-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.swapstech.galaxy.staticdata</groupId>
+        <artifactId>galaxy-staticdata-client</artifactId>
+        <version>${galaxy-staticdata-client.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>*</artifactId>
+            <groupId>*</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.finzly.bankos</groupId>
+        <artifactId>bankos-message-sdk</artifactId>
+        <version>${galaxy-common-sdk.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.finzly.bankos</groupId>
+        <artifactId>bankos-model-sdk</artifactId>
+        <version>${galaxy-common-sdk.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.finzly.bankos</groupId>
+        <artifactId>bankos-message-sqs</artifactId>
+        <version>${galaxy-common-sdk.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.finzly.bankos</groupId>
+        <artifactId>bankos-security-sdk</artifactId>
+        <version>${galaxy-common-sdk.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.finzly.bankos</groupId>
+        <artifactId>bankos-persistence-sdk</artifactId>
+        <version>${galaxy-common-sdk.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <module>galaxy-dashboard-ui</module>
+    <module>galaxy-dashboard-client</module>
+    <module>galaxy-dashboard-service</module>
+  </modules>
+
+
+</project>

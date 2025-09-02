@@ -1,0 +1,200 @@
+<!-- line-chart.component.html -->
+<!-- Ultra-Premium Line Chart Widget - Notion/Linear Style -->
+<div class="premium-line-chart-widget group h-full relative overflow-hidden">
+  
+  <!-- Glass morphism background with premium gradients -->
+  <div class="absolute inset-0 bg-gradient-to-br from-white/95 via-slate-50/90 to-indigo-50/95 backdrop-blur-2xl"></div>
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(99,102,241,0.05),transparent_50%)]"></div>
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(139,92,246,0.03),transparent_50%)]"></div>
+  <div class="absolute inset-0 border border-gray-200/60 rounded-3xl"></div>
+  <div class="absolute inset-0 border border-white/60 rounded-3xl"></div>
+  
+  <!-- Main content container -->
+  <div class="relative z-10 h-full flex flex-col p-4">
+    
+    <!-- Header Section with Premium Design -->
+    <div class="flex items-center justify-between mb-3 flex-shrink-0"> <!-- Reduced margin-bottom -->
+      <div class="flex items-center space-x-4">
+        <!-- Premium title section -->
+        <div class="flex items-center space-x-3">
+          <div class="w-1 h-8 bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 rounded-full shadow-lg"></div>
+          <div>
+            <h3 class="text-xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent leading-tight">{{title}}</h3>
+            <div class="flex items-center space-x-2 mt-1">
+              <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-sm"></div>
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Live Insights</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Premium controls section -->
+      <div class="flex items-center space-x-3">
+        <!-- Time range selector -->
+        <div class="relative" *ngIf="!isRefreshing">
+          <select 
+            [(ngModel)]="selectedTimeFrame" 
+            (ngModelChange)="onTimeFrameChange($event)"
+            class="no-drag appearance-none bg-white/80 border border-gray-200/80 rounded-2xl px-5 py-2.5 pr-10 text-sm font-semibold text-gray-700 hover:bg-white hover:border-indigo-300/50 focus:outline-none focus:ring-2 focus:ring-indigo-400/30 focus:border-indigo-400/60 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg">
+            <option value="7d">Last 7 days</option>
+            <option value="1w">Last week</option>
+            <option value="1m">Last month</option>
+            <option value="3m">Last 3 months</option>
+            <option value="6m">Last 6 months</option>
+            <option value="1y">Last year</option>
+            <option value="all">All time</option>
+          </select>
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Widget actions -->
+        <app-widget-header
+          [title]="''"
+          [isLoading]="isRefreshing"
+          [dashboardWidgetId]="data?.dashboardWidgetId"
+          [widgetData]="getExpandedData()"
+          (onRefresh)="handleRefresh()"
+          (onExpand)="handleExpand($event)"
+          (onClose)="handleClose($event)"
+          class="premium-widget-actions">
+        </app-widget-header>
+      </div>
+    </div>
+
+    <!-- Ultra-Modern Responsive Stats Display - Made more compact -->
+    <div *ngIf="!isRefreshing && selectedDataPoint" class="responsive-stats-container flex-shrink-0 mb-2"> <!-- Added margin-bottom -->
+      <div class="stats-grid-line-chart">
+        
+        <!-- Ultra-Modern Current Value Card -->
+        <div class="modern-stat-card group/stat" [attr.data-type]="'current'">
+          <div class="stat-card-bg bg-gradient-to-br from-blue-500/10 via-indigo-500/5 to-cyan-500/10"></div>
+          <div class="stat-card-content">
+            <!-- Icon -->
+            <div class="stat-icon bg-gradient-to-br from-blue-500 to-indigo-600">
+              <svg class="stat-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+              </svg>
+            </div>
+            <!-- Content -->
+            <div class="stat-content">
+              <div class="stat-label">Current Value</div>
+              <div class="stat-value text-blue-600">{{selectedDataPoint.value | number:'1.0-2'}}</div>
+              <div class="stat-meta">Latest point</div>
+            </div>
+            <!-- Trend indicator -->
+            <div class="stat-trend positive">
+              <div class="trend-dot"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ultra-Modern Change Card -->
+        <div class="modern-stat-card group/stat" [attr.data-type]="(selectedDataPoint?.change || 0) >= 0 ? 'change-positive' : 'change-negative'">
+          <div class="stat-card-bg" [ngClass]="{
+            'bg-emerald-50': (selectedDataPoint?.change || 0) >= 0,
+            'bg-red-50': (selectedDataPoint?.change || 0) < 0
+          }"></div>
+          <div class="stat-card-content">
+            <!-- Icon -->
+            <div class="stat-icon" [ngClass]="{
+              'bg-emerald-500': (selectedDataPoint?.change || 0) >= 0,
+              'bg-red-500': (selectedDataPoint?.change || 0) < 0
+            }">
+              <svg class="stat-icon-svg" viewBox="0 0 24 24" fill="currentColor" *ngIf="(selectedDataPoint?.change || 0) >= 0">
+                <path d="M7 14l5-5 5 5z"/>
+              </svg>
+              <svg class="stat-icon-svg" viewBox="0 0 24 24" fill="currentColor" *ngIf="(selectedDataPoint?.change || 0) < 0">
+                <path d="M7 10l5 5 5-5z"/>
+              </svg>
+            </div>
+            <!-- Content -->
+            <div class="stat-content">
+              <div class="stat-label">Change Rate</div>
+              <div class="stat-value" [ngClass]="{
+                'text-emerald-600': (selectedDataPoint?.change || 0) >= 0,
+                'text-rose-600': (selectedDataPoint?.change || 0) < 0
+              }">
+                {{(selectedDataPoint?.change || 0) > 0 ? '+' : ''}}{{selectedDataPoint?.change | number:'1.1-2'}}%
+              </div>
+              <div class="stat-meta">vs previous</div>
+            </div>
+            <!-- Trend indicator -->
+            <div class="stat-trend" [ngClass]="{
+              'positive': (selectedDataPoint?.change || 0) >= 0,
+              'negative': (selectedDataPoint?.change || 0) < 0
+            }">
+              <div class="trend-dot"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ultra-Modern Period Card -->
+        <div class="modern-stat-card group/stat" [attr.data-type]="'period'">
+          <div class="stat-card-bg bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-indigo-500/10"></div>
+          <div class="stat-card-content">
+            <!-- Icon -->
+            <div class="stat-icon bg-gradient-to-br from-violet-500 to-purple-600">
+              <svg class="stat-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <!-- Content -->
+            <div class="stat-content">
+              <div class="stat-label">Time Period</div>
+              <div class="stat-value text-violet-600">{{selectedDataPoint.period}}</div>
+              <div class="stat-meta">Current frame</div>
+            </div>
+            <!-- Trend indicator -->
+            <div class="stat-trend neutral">
+              <div class="trend-dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isRefreshing" class="flex-1 flex items-center justify-center min-h-[300px]">
+      <div class="text-center">
+        <div class="relative inline-flex items-center justify-center w-20 h-20 mb-6">
+          <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-3xl animate-pulse shadow-2xl"></div>
+          <div class="relative w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <p class="text-base font-semibold text-gray-700 mb-2">Analyzing data trends</p>
+        <p class="text-sm text-gray-500">Please wait a moment...</p>
+      </div>
+    </div>
+
+    <!-- Ultra-Premium Chart Container with height constraint - Now gets more space -->
+    <div *ngIf="!isRefreshing" class="flex-1 relative chart-container-responsive min-h-0" style="min-height: 200px;">
+      <!-- Chart backdrop with subtle gradient -->
+      <div class="absolute inset-4 bg-gradient-to-br from-gray-50/30 to-indigo-50/20 rounded-2xl"></div>
+      
+      <!-- Main chart canvas -->
+      <canvas baseChart
+              [data]="chartData"
+              [options]="chartOptions"
+              [type]="'line'"
+              class="premium-line-canvas relative z-10 w-full h-full rounded-2xl">
+      </canvas>
+      
+      <!-- Premium overlay effects -->
+      <div class="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden">
+        <!-- Subtle gradient overlay at edges -->
+        <div class="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-white/40 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white/40 to-transparent"></div>
+        <div class="absolute top-0 bottom-0 left-0 w-8 bg-gradient-to-r from-white/40 to-transparent"></div>
+        <div class="absolute top-0 bottom-0 right-0 w-8 bg-gradient-to-l from-white/40 to-transparent"></div>
+        
+        <!-- Premium glow effect -->
+        <div class="absolute inset-0 border border-white/20 rounded-2xl"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Premium hover glow effect -->
+  <div class="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-indigo-100/10 via-transparent to-purple-100/10"></div>

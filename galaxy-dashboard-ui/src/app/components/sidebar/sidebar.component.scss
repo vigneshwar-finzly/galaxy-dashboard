@@ -1,0 +1,1359 @@
+// Light & Elegant Sidebar Styles
+
+// Dashboard Header Styles with Enhanced Transitions
+.dashboard-header {
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  
+  &:hover { 
+    background: rgba(52, 152, 219, 0.06);
+    transform: translateY(-1px);
+  }
+  
+  h2, p {
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+}
+
+// Enhanced Actions Button
+.action-btn {
+  position: relative;
+  background: transparent !important;
+  
+  &:hover {
+    .fas.fa-circle {
+      transform: scale(1.3);
+      opacity: 0.8;
+    }
+  }
+  
+  .fas.fa-circle {
+    font-size: 4px;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    opacity: 0.5;
+  }
+}
+
+// Dropdown wrapper positioning
+.dropdown-wrapper {
+  position: relative;
+  
+  // Ensure the modern dropdown is positioned relative to viewport
+  .modern-action-dropdown {
+    position: fixed !important;
+    z-index: 999999 !important;
+  }
+  
+  // Remove any positioning context that might interfere
+  &::after {
+    content: '';
+    position: static;
+    z-index: auto;
+  }
+}
+
+// Collapsed state actions button
+.floating-sidebar[class*="w-24"] {
+  .nav-item {
+    .fas.fa-circle {
+      font-size: 6px;
+      opacity: 0.7;
+    }
+    
+    &:hover {
+      .fas.fa-circle {
+        transform: scale(1.5);
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// Global dropdown positioning - ensure it's always on top
+.modern-action-dropdown {
+  position: fixed !important;
+  z-index: 999999 !important;
+  isolation: isolate;
+  pointer-events: auto;
+  
+  // Force it to be above everything
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+}
+
+// Modern Hover Dropdown - Light & Elegant Design
+.modern-action-dropdown {
+  position: fixed !important;
+  z-index: 999999 !important;
+  width: 280px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.9),
+    0 0 0 4px rgba(52, 152, 219, 0.12);
+  border: 1px solid rgba(93, 173, 226, 0.25);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  animation: modernDropdownSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: top center;
+  pointer-events: auto;
+  isolation: isolate;
+  
+  // Ensure it's positioned relative to viewport
+  transform: none !important;
+  left: var(--dropdown-left, 0px) !important;
+  top: 100px !important;
+  
+  // Ensure it's above everything
+  &::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  
+  // Glass morphism effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+    border-radius: 20px;
+    pointer-events: none;
+  }
+  
+  // Dropdown Header
+  .dropdown-header {
+    display: flex;
+    align-items: center;
+    padding: 20px 20px 16px;
+    background: var(--gradient-purple);
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shimmer 3s infinite;
+    }
+    
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      backdrop-filter: blur(10px);
+      
+      i {
+        color: white;
+        font-size: 18px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+      }
+    }
+    
+    .header-content {
+      flex: 1;
+      
+      .header-title {
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0 0 2px 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      .header-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+        margin: 0;
+        font-weight: 500;
+      }
+    }
+  }
+  
+  // Dropdown Divider
+  .dropdown-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.2), transparent);
+    margin: 0 20px;
+  }
+  
+  // Action Items Container
+  .action-items {
+    padding: 8px 0;
+    
+    .action-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      margin: 4px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      animation: actionItemSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      
+      // Hover effect with gradient
+      &:hover {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        transform: translateX(8px) scale(1.02);
+        box-shadow: 
+          0 8px 25px rgba(52, 152, 219, 0.15),
+          0 0 0 1px rgba(93, 173, 226, 0.12);
+        
+        .action-icon {
+          transform: scale(1.1) rotate(5deg);
+          box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+        
+        .action-content {
+          .action-label {
+            color: var(--color-purple-900);
+            transform: translateX(4px);
+          }
+          
+          .action-description {
+            color: var(--color-purple-700);
+          }
+        }
+        
+          .action-arrow {
+            transform: translateX(4px);
+            color: var(--color-purple-500);
+        }
+      }
+      
+      // Active state
+      &:active {
+        transform: translateX(4px) scale(0.98);
+        transition: all 0.1s ease;
+      }
+      
+      // Action Icon
+      .action-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        
+        // Theme color backgrounds
+        &.icon-azure { background: linear-gradient(135deg, #5dade2, #3498db); }
+        &.icon-forest { background: linear-gradient(135deg, #34d399, #27ae60); }
+        &.icon-coral { background: linear-gradient(135deg, #ef7368, #e74c3c); }
+        &.icon-ocean { background: linear-gradient(135deg, #818cf8, #4f46e5); }
+        &.icon-plum { background: linear-gradient(135deg, #a569bd, #8e44ad); }
+        
+        i {
+          color: white;
+          font-size: 14px;
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+      }
+      
+      // Action Content
+      .action-content {
+        flex: 1;
+        min-width: 0;
+        
+        .action-label {
+          display: block;
+          color: #1e293b;
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 2px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .action-description {
+          display: block;
+          color: var(--color-purple-700);
+          font-size: 11px;
+          font-weight: 500;
+          line-height: 1.3;
+          transition: all 0.3s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+      }
+      
+      // Action Arrow
+      .action-arrow {
+        color: var(--color-purple-400);
+        font-size: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0.6;
+      }
+    }
+  }
+  
+  // Dropdown Footer
+  .dropdown-footer {
+    padding: 12px 20px 16px;
+    border-top: 1px solid rgba(52, 152, 219, 0.12);
+    background: rgba(248, 250, 252, 0.8);
+    
+    .footer-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-purple-700);
+      font-size: 11px;
+      font-weight: 500;
+      
+      i {
+        margin-right: 6px;
+        color: var(--color-purple-500);
+        font-size: 10px;
+      }
+    }
+  }
+}
+
+// Modern Dropdown Animation Keyframes
+@keyframes modernDropdownSlideIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px) rotateX(-15deg);
+    filter: blur(8px);
+  }
+  50% {
+    transform: scale(1.05) translateY(-8px) rotateX(-5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0deg);
+    filter: blur(0px);
+  }
+}
+
+@keyframes actionItemSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+// Legacy Modern Dropdown Enhancements (for collapsed state)
+.custom-action-dropdown {
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(93, 173, 226, 0.25);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 
+              0 10px 10px -5px rgba(0, 0, 0, 0.04),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  
+  .action-dropdown-arrow-pointer {
+    border-right-color: rgba(255, 255, 255, 0.98) !important;
+    filter: drop-shadow(-1px 0 1px rgba(0, 0, 0, 0.05));
+  }
+  
+  ul {
+    li {
+      padding: 10px 16px;
+      margin: 0 4px;
+      border-radius: 8px !important;
+      
+      &:hover {
+        background: rgba(52, 152, 219, 0.08) !important;
+        transform: translateX(4px) !important;
+        
+        i {
+        color: var(--color-purple-500) !important;
+        }
+      }
+      
+      i {
+        font-size: 14px;
+        width: 18px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.floating-sidebar {
+  background: #ffffff; // Main background color - white
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 2rem);
+  backdrop-filter: blur(10px);
+  animation: sidebarEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  // Custom scrollbar for light theme
+  .overflow-y-auto {
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1; // Light thumb for contrast
+      border-radius: 2px;
+      
+      &:hover {
+        background: #94a3b8;
+      }
+    }
+  }
+}
+
+// Sidebar entrance animation
+@keyframes sidebarEntrance {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+// Enhanced Navigation Items with Modern Curved Shapes
+.nav-item {
+  position: relative;
+  margin: 4px 0;
+  animation: itemEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  
+  // Stagger animation for each item
+  @for $i from 1 through 7 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{0.1 + $i * 0.1}s;
+    }
+  }
+  
+  // Modern curved shapes with variety for each item - only on container
+  &:nth-child(4n+1) > div {
+    border-radius: 50px;
+    &::before {
+      border-radius: 50px;
+    }
+  }
+  
+  &:nth-child(4n+2) > div {
+    border-radius: 50px;
+    &::before {
+      border-radius: 50px;
+    }
+  }
+  
+  &:nth-child(4n+3) > div {
+    border-radius: 50px;
+    &::before {
+      border-radius: 50px;
+    }
+  }
+  
+  &:nth-child(4n) > div {
+    border-radius: 50px;
+    &::before {
+      border-radius: 50px;
+    }
+  }
+  
+  // Enhanced active state with modern elevation and proper targeting
+  &.active {
+    transform: translateX(6px) scale(1.02);
+    
+    > div {
+      // background: linear-gradient(135deg, 
+      //   var(--color-purple-700) 0%, 
+      //   var(--color-purple-600) 100%) !important;
+      // Add bright active state glow
+      // box-shadow: 
+      //   0 8px 25px rgba(99, 102, 241, 0.4),
+      //   0 0 20px rgba(99, 102, 241, 0.3),
+      //   inset 0 0 15px rgba(255, 255, 255, 0.1);
+      // Remove white border from active state
+      border: none;
+      border-radius: 50px;
+      
+      &::before {
+        opacity: 1;
+        background: linear-gradient(135deg, 
+          rgba(255, 255, 255, 0.1) 0%, 
+          rgba(255, 255, 255, 0.05) 100%);
+        // Remove old border styling from pseudo-element
+        border: none;
+        border-radius: 50px;
+        // Adjust positioning to account for border
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+      }
+      
+      // Ensure icons and text maintain proper active colors
+      i {
+        color: white !important;
+        transform: scale(1.1);
+        // Add bright glow to active icons
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+      }
+      
+      span {
+        color: white !important;
+        font-weight: 600;
+        // Add bright glow to active text
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+      }
+    }
+  }
+  
+  // Enhanced hover effects with sliding background - only for non-active items
+  &:hover:not(.active) {
+    transform: translateX(6px) translateY(-2px) scale(1.005);
+    
+    // Target only the main container div, not affecting inner content
+    > div {
+      // Remove background on hover to show sliding effect
+      background: transparent !important;
+      
+      // Sliding background effect using ::after pseudo-element
+      &::after {
+        left: 0; // Slide in from left
+        opacity: 1;
+        z-index: 0;
+        border: none;
+        border-radius: 50px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+      }
+      
+      // Change text and icon colors to white on hover
+      i {
+        color: white !important;
+        transform: scale(1.05);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+      }
+      
+      span {
+        color: white !important;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.25));
+      }
+    }
+  }
+  
+  // Explicitly disable hover effects for active items
+  &.active:hover {
+    transform: translateX(6px) scale(1.02) !important; // Keep the active transform
+    
+    > div {
+      // Ensure active state styles are maintained on hover
+      background: var(--color-purple-700) !important;
+      
+      &::after {
+        opacity: 0 !important; // Disable sliding background
+      }
+      
+      i, span {
+        color: white !important;
+        filter: none !important;
+        text-shadow: none !important;
+      }
+    }
+  }
+  
+  // Enhanced container div styling with sliding background effect
+  > div {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    // Gradient background effect
+    &::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      width: calc(100% + 6px);
+      height: calc(100% + 6px);
+      background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.05) 0%, 
+        rgba(52, 152, 219, 0.03) 100%);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+      // Initial capsule border styling for active state
+      border: 3px solid transparent;
+      border-radius: 50px;
+    }
+    
+    // Sliding background effect - similar to CSS example
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%; // Start from left, hidden
+      width: 100%;
+      height: 100%;
+      background: var(--color-purple-300) !important;
+      transition: left 0.3s ease; // Only slide transition, no color transition
+      z-index: 0;
+      opacity: 0;
+      transform: translateX(0);
+      // Remove initial capsule border styling
+      border: none;
+      border-radius: 50px;
+    }
+    
+    // Ensure content is above pseudo-elements
+    > * {
+      position: relative;
+      z-index: 2; // Higher than sliding background
+      transition: none; // Remove slow color transitions
+    }
+    
+    // Icon container styling
+    .w-5, .w-6 {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      i {
+        transition: none; // Remove slow transitions
+        position: relative;
+        z-index: 2;
+      }
+    }
+    
+    // Text content styling
+    span {
+      transition: none; // Remove slow transitions
+      position: relative;
+      z-index: 2;
+    }
+  }
+  
+  // Sliding background trigger on hover - only for non-active items
+  &:hover:not(.active) > div::after {
+    left: -3px; // Slide to full width with border offset
+    opacity: 1;
+    // Add subtle pulsing effect
+    animation: subtlePulse 2s ease-in-out infinite;
+  }
+  
+  // Disable sliding background for active items
+  &.active > div::after {
+    opacity: 0 !important;
+    animation: none !important;
+  }
+  
+  // Subtle pulsing animation for hover effects
+  @keyframes subtlePulse {
+    0%, 100% {
+      box-shadow: 
+        inset 0 0 15px rgba(255, 255, 255, 0.2),
+        0 0 10px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+      box-shadow: 
+        inset 0 0 20px rgba(255, 255, 255, 0.3),
+        0 0 15px rgba(255, 255, 255, 0.2);
+    }
+  }
+  
+  // Different sliding background colors for each item - more subtle colors
+  &:nth-child(1) > div::after {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  }
+  
+  &:nth-child(2) > div::after {
+    background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
+  }
+  
+  &:nth-child(3) > div::after {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+  }
+  
+  &:nth-child(4) > div::after {
+    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  }
+  
+  &:nth-child(5) > div::after {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  }
+  
+  &:nth-child(6) > div::after {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  }
+  
+  &:nth-child(7) > div::after {
+    background: linear-gradient(135deg, #ec4899, #db2777) !important;
+  }
+  
+  // Legacy anchor styles - kept for any remaining anchor elements
+  a {
+    position: relative;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+      background: var(--color-surface-hover);
+      transform: translateX(4px);
+      color: var(--color-purple-700);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+    }
+  }
+}
+
+// Item entrance animation
+@keyframes itemEntrance {
+  0% {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Actions Button Styling
+.action-btn {
+  position: relative;
+  overflow: hidden;
+  background: var(--gradient-purple);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
+  
+  &:hover {
+    background: var(--gradient-purple-light);
+    transform: translateX(6px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.25);
+    
+    mat-icon {
+      transform: rotate(180deg) scale(1.1);
+    }
+  }
+  
+  // Icon rotation animation
+  mat-icon {
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+// Collapsed state styling
+.floating-sidebar {
+  &[class*="w-24"] {
+    .nav-item {
+      // Hide expanded view
+      a {
+        display: none;
+      }
+      
+      // Show collapsed view
+      a.flex.flex-col {
+        display: flex !important;
+        width: 100%;
+        padding: 12px 8px;
+        border-radius: 8px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        
+        &:hover {
+          background: var(--color-purple-100);
+          transform: scale(1.08);
+          box-shadow: 0 6px 20px rgba(52, 152, 219, 0.15);
+        }
+        
+        // Active state in collapsed mode
+        &[class*="bg-blue-100"] {
+          background: var(--color-purple-100);
+          color: var(--color-purple-700);
+        }
+      }
+      
+      // Icon styling in collapsed state
+      .w-6.h-6 {
+        margin-bottom: 4px;
+        
+        i {
+          font-size: 18px;
+          // color: #475569; // Dark icon color
+        }
+      }
+      
+      // Text styling in collapsed state
+      .text-xs {
+        font-size: 10px;
+        line-height: 1.2;
+        max-width: 100%;
+        word-wrap: break-word;
+        text-align: center;
+        // color: #475569; // Dark text color
+      }
+    }
+    
+    // Adjust spacing for collapsed state
+    nav {
+      padding: 16px 8px;
+      
+      .space-y-4 {
+        > div {
+          margin-bottom: 12px;
+        }
+      }
+    }
+  }
+}
+
+// Button interactions
+button {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #64748b; // Medium gray text color
+  
+  &:hover {
+    transform: translateY(-3px);
+    background: var(--color-purple-100);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+  
+  &:focus {
+    outline: none;
+    // box-shadow: 0 0 0 2px #d1d5db;
+  }
+}
+
+// Actions Dropdown Styling
+.custom-action-dropdown {
+  position: fixed !important;
+  z-index: 9999 !important;
+  animation: dropdownSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: top left;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  min-width: 220px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  
+  // Arrow pointer
+  .action-dropdown-arrow-pointer {
+    position: absolute;
+    left: -8px;
+    top: 20px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid white;
+    filter: drop-shadow(-2px 0 2px rgba(0, 0, 0, 0.1));
+    animation: arrowSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+  }
+  
+  // Dropdown list items
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    
+    li {
+      position: relative;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      animation: itemSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      
+      // Stagger animation for each item
+      @for $i from 1 through 7 {
+        &:nth-child(#{$i}) {
+          animation-delay: #{0.1 + $i * 0.05}s;
+        }
+      }
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.08), transparent);
+        transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      &:hover::before {
+        left: 100%;
+      }
+      
+      &:hover {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        transform: translateX(6px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        
+        i {
+          transform: scale(1.15) rotate(5deg);
+        }
+        
+        span {
+          transform: translateX(2px);
+        }
+      }
+      
+      // Icon animations
+      i {
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      
+      // Text animations
+      span {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      // Active state
+      &:active {
+        transform: translateX(3px) scale(0.98);
+        transition: all 0.1s ease;
+      }
+      
+      // First and last item styling
+      &:first-child {
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+      }
+      
+      &:last-child {
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+      }
+    }
+  }
+}
+
+// Enhanced dropdown animation keyframes
+@keyframes dropdownSlideIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px) rotateX(-10deg);
+    filter: blur(4px);
+  }
+  50% {
+    transform: scale(1.05) translateY(-5px) rotateX(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0deg);
+    filter: blur(0px);
+  }
+}
+
+@keyframes arrowSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes itemSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Mobile responsiveness with adjusted hover effects
+@media (max-width: 1024px) {
+  .floating-sidebar {
+    background: #ffffff; // White theme on mobile
+    
+    &.mobile-open {
+      transform: translateX(0);
+    }
+  }
+  
+  // Reduce sidebar hover effects on tablets
+  .nav-item {
+    &:hover:not(.active) {
+      transform: translateX(3px) translateY(-1px) scale(1.002);
+      
+      > div {
+        background: linear-gradient(135deg, 
+          var(--color-purple-50) 0%, 
+          var(--color-purple-100) 100%) !important;
+        box-shadow: 0 4px 10px rgba(99, 102, 241, 0.08),
+                    0 2px 6px rgba(52, 152, 219, 0.06) !important;
+      }
+    }
+    
+    &.active {
+      transform: translateX(3px) scale(1.01);
+      
+      > div {
+        background: var(--color-purple-700) !important;
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2),
+                    0 4px 10px rgba(52, 152, 219, 0.15) !important;
+      }
+    }
+    
+    // Explicitly disable hover effects for active items on tablets
+    &.active:hover {
+      transform: translateX(3px) scale(1.01) !important;
+      
+      > div {
+        background: var(--color-purple-700) !important;
+        
+        &::after {
+          opacity: 0 !important;
+        }
+      }
+    }
+  }
+  
+  // Adjust dropdown position on mobile
+  .custom-action-dropdown,
+  .modern-action-dropdown {
+    position: fixed !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    
+    .action-dropdown-arrow-pointer {
+      display: none; // Hide arrow on mobile
+    }
+  }
+}
+
+// Mobile specific styles
+@media (max-width: 768px) {
+  .nav-item {
+    // Minimal hover effects on mobile for better touch interaction
+    &:hover:not(.active) {
+      transform: translateX(1px);
+      
+      > div {
+        background: linear-gradient(135deg, 
+          var(--color-purple-50) 0%, 
+          var(--color-purple-100) 100%) !important;
+        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.08) !important;
+      }
+    }
+    
+    &.active {
+      transform: translateX(1px);
+      
+      > div {
+        background: var(--color-purple-700) !important;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15) !important;
+      }
+    }
+    
+    // Completely disable hover effects for active items on mobile
+    &.active:hover {
+      transform: translateX(1px) !important;
+      
+      > div {
+        background: var(--color-purple-700) !important;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15) !important;
+      }
+    }
+    
+    // Disable complex animations on mobile for performance
+    > div::after {
+      display: none;
+    }
+  }
+}
+
+// Focus states for accessibility
+/* removed empty focus-visible ruleset (handled globally) */
+
+// Badge styling
+.badge {
+  &.bg-blue-500 {
+    background: var(--color-purple-500);
+  }
+  
+  &.bg-green-500 {
+    background: #10b981;
+  }
+  
+  &.bg-red-500 {
+    background: #ef4444;
+  }
+}
+
+// Enhanced transitions for premium feel
+.nav-item,
+.action-btn,
+.custom-action-dropdown,
+.modern-action-dropdown {
+  will-change: transform, opacity, box-shadow;
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .floating-sidebar,
+  .nav-item,
+  button,
+  .custom-action-dropdown,
+  .modern-action-dropdown {
+    // transition: none !important;
+    animation: none !important;
+    
+    &::before,
+    &::after {
+      display: none !important;
+    }
+  }
+  
+  .nav-item {
+    &:hover,
+    &.active {
+      transform: none !important;
+    }
+    
+    > div {
+      // transition: background-color 0.2s ease, box-shadow 0.2s ease !important;
+      
+      &::before,
+      &::after {
+        display: none !important;
+      }
+    }
+  }
+}
+
+// Enhanced hover effects for collapsed state
+.floating-sidebar[class*="w-24"] {
+  .nav-item {
+    &:hover:not(.active) {
+      transform: scale(1.08) translateY(-1px);
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      
+      .text-xs {
+        transform: translateY(0.5px);
+        font-weight: 600;
+      }
+      
+      i {
+        transform: scale(1.05);
+        filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
+      }
+    }
+    
+    // Disable hover effects for active items in collapsed state
+    &.active:hover {
+      transform: scale(1) translateY(0) !important;
+      
+      .text-xs, i {
+        transform: none !important;
+        filter: none !important;
+      }
+    }
+    
+    // Enhanced transition out
+    &:not(:hover) {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+}
+
+// Smooth transitions for all interactive elements
+/* removed empty universal transition ruleset */
+
+// Material Icons styling
+mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  
+  &.text-sm {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+  }
+}
+
+// Global CSS to ensure proper dropdown positioning
+html, body {
+  overflow-x: visible;
+  position: relative;
+}
+
+// Theme palette block (modern SaaS style)
+.theme-block {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-soft);
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid var(--color-border-light);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  cursor: pointer;
+}
+.theme-option:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+  border-color: var(--color-border-purple);
+}
+.theme-swatch {
+  width: 18px; height: 18px; border-radius: 6px; box-shadow: inset 0 0 0 2px rgba(255,255,255,.6);
+}
+
+// Global dropdown positioning - ensure it's always on top
+.modern-action-dropdown {
+  position: fixed !important;
+  z-index: 999999 !important;
+  isolation: isolate;
+  pointer-events: auto;
+  
+  // Force it to be above everything
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+}
+
+.logo-icon {
+  // height: 35px;
+  // width: 250px;
+  background-size: 30px;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 8px;
+  padding: 20px;
+  background-color: var(--color-purple-700);
+}
+
+
+.collapsed-logo {
+  background-image: url('../../../../public/assets/download_logo.png');
+  margin: auto;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #33c1d5;
+  font-size: 2rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s;
+}

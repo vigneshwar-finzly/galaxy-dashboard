@@ -1,0 +1,17 @@
+<div class="app-container">
+  <!-- Top Navigation Bar -->
+  <app-navbar (componentSelected)="showComponent($event)"></app-navbar>
+  
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <app-dashboard *ngIf="currentComponent === 'dashboard'"></app-dashboard>
+    <app-create-dashboard *ngIf="currentComponent === 'create-dashboard'"></app-create-dashboard>
+    <app-create-widget *ngIf="currentComponent === 'create-widget'"></app-create-widget>
+    <app-manage-dashboard *ngIf="currentComponent === 'manage-dashboard'"></app-manage-dashboard>
+    <app-manage-widget *ngIf="currentComponent === 'manage-widget'"></app-manage-widget>
+  </main>
+</div>
+
+<!-- Global components -->
+<app-notification-toast></app-notification-toast>
+<app-loading-spinner></app-loading-spinner>

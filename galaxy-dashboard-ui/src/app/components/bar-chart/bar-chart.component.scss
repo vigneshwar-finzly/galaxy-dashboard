@@ -1,0 +1,370 @@
+// bar-chart-responsive-stats.scss - Updated for more compact stats
+// Ultra-Modern Responsive Stats System
+// This creates the most goated stats design with adaptive sizing
+
+.responsive-stats-container {
+  margin-bottom: 0.5rem; // Reduced from 0.75rem
+  padding: 0.125rem; // Reduced from 0.25rem
+  
+  // Responsive spacing - more compact
+  @media (max-width: 640px) {
+    margin-bottom: 0.25rem; // Reduced
+    padding: 0.0625rem; // Reduced
+  }
+  
+  @media (min-width: 1024px) {
+    margin-bottom: 0.75rem; // Reduced from 1rem
+    padding: 0.25rem; // Reduced from 0.5rem
+  }
+}
+
+.stats-grid-responsive {
+  display: grid;
+  gap: 0.375rem; // Reduced from 0.5rem
+  
+  // Mobile: Single column for small screens
+  grid-template-columns: 1fr;
+  
+  // Tablet: 2 columns
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem; // Reduced from 0.625rem
+  }
+  
+  // Desktop: 3 columns
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.625rem; // Reduced from 0.75rem
+  }
+  
+  // Large desktop: More compact spacing
+  @media (min-width: 1024px) {
+    gap: 0.75rem; // Reduced from 1rem
+  }
+}
+
+.modern-stat-card {
+  position: relative;
+  border-radius: 1.25rem; // Reduced from 1.5rem
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  // Responsive sizing - more compact
+  min-height: 50px; // Reduced from 60px
+  
+  @media (min-width: 640px) {
+    min-height: 60px; // Reduced from 70px
+    border-radius: 1rem; // Reduced from 1.25rem
+  }
+  
+  @media (min-width: 768px) {
+    min-height: 70px; // Reduced from 80px
+    border-radius: 1.25rem; // Reduced from 1.5rem
+  }
+  
+  @media (min-width: 1024px) {
+    min-height: 75px; // Reduced from 85px
+  }
+  
+  // Premium hover effects
+  &:hover {
+    transform: translateY(-3px) scale(1.02); // Reduced from -4px
+    border-color: rgba(255, 255, 255, 0.4);
+    
+    .stat-card-bg {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    
+    .stat-icon {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-value {
+      transform: scale(1.05);
+    }
+    
+    .trend-dot {
+      transform: scale(1.5);
+    }
+  }
+  
+  // Card type specific colors
+  &[data-type="total"] {
+    &:hover {
+      box-shadow: 0 15px 30px rgba(99, 102, 241, 0.25); // Reduced from 20px 40px
+    }
+  }
+  
+  &[data-type="average"] {
+    &:hover {
+      box-shadow: 0 15px 30px rgba(16, 185, 129, 0.25); // Reduced
+    }
+  }
+  
+  &[data-type="growth-positive"] {
+    &:hover {
+      box-shadow: 0 15px 30px rgba(16, 185, 129, 0.25); // Reduced
+    }
+  }
+  
+  &[data-type="growth-negative"] {
+    &:hover {
+      box-shadow: 0 15px 30px rgba(239, 68, 68, 0.25); // Reduced
+    }
+  }
+}
+
+.stat-card-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+  transition: all 0.4s ease;
+  border-radius: inherit;
+}
+
+.stat-card-content {
+  position: relative;
+  height: 100%;
+  padding: 0.5rem; // Reduced from 0.625rem
+  display: flex;
+  align-items: center;
+  gap: 0.375rem; // Reduced from 0.5rem
+  
+  // Responsive padding - more compact
+  @media (max-width: 640px) {
+    padding: 0.375rem; // Reduced from 0.5rem
+    gap: 0.25rem; // Reduced from 0.375rem
+  }
+  
+  @media (min-width: 1024px) {
+    padding: 0.625rem; // Reduced from 0.75rem
+    gap: 0.5rem; // Reduced from 0.625rem
+  }
+}
+
+.stat-icon {
+  width: 1.75rem; // Reduced from 2rem
+  height: 1.75rem; // Reduced from 2rem
+  border-radius: 0.625rem; // Reduced from 0.75rem
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  
+  // Responsive sizing - more compact
+  @media (max-width: 640px) {
+    width: 1.5rem; // Reduced from 1.75rem
+    height: 1.5rem; // Reduced from 1.75rem
+    border-radius: 0.5rem; // Reduced from 0.625rem
+  }
+  
+  @media (min-width: 1024px) {
+    width: 2rem; // Reduced from 2.25rem
+    height: 2rem; // Reduced from 2.25rem
+    border-radius: 0.75rem; // Reduced from 0.875rem
+  }
+}
+
+.stat-icon-svg {
+  width: 1rem; // Reduced from 1.25rem
+  height: 1rem; // Reduced from 1.25rem
+  color: white;
+  
+  @media (max-width: 640px) {
+    width: 0.875rem; // Reduced from 1rem
+    height: 0.875rem; // Reduced from 1rem
+  }
+  
+  @media (min-width: 1024px) {
+    width: 1.25rem; // Reduced from 1.5rem
+    height: 1.25rem; // Reduced from 1.5rem
+  }
+}
+
+.stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-label {
+  font-size: 0.6875rem; // Reduced from 0.75rem
+  font-weight: 600;
+  color: rgba(107, 114, 128, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.125rem; // Reduced from 0.25rem
+  line-height: 1.2;
+  
+  // Responsive sizing
+  @media (max-width: 640px) {
+    font-size: 0.625rem;
+    margin-bottom: 0.0625rem; // Reduced from 0.125rem
+  }
+  
+  @media (min-width: 1024px) {
+    font-size: 0.75rem; // Reduced from 0.875rem
+    margin-bottom: 0.25rem; // Reduced from 0.375rem
+  }
+}
+
+.stat-value {
+  font-size: 1.125rem; // Reduced from 1.25rem
+  font-weight: 800;
+  color: #1f2937;
+  line-height: 1.1;
+  transition: all 0.3s ease;
+  margin-bottom: 0.0625rem; // Reduced from 0.125rem
+  
+  // Responsive sizing - more compact
+  @media (max-width: 640px) {
+    font-size: 0.875rem; // Reduced from 1rem
+    font-weight: 700;
+  }
+  
+  @media (min-width: 768px) {
+    font-size: 1.25rem; // Reduced from 1.375rem
+  }
+  
+  @media (min-width: 1024px) {
+    font-size: 1.375rem; // Reduced from 1.5rem
+    font-weight: 800;
+  }
+}
+
+.stat-meta {
+  font-size: 0.625rem; // Reduced from 0.6875rem
+  font-weight: 500;
+  color: rgba(107, 114, 128, 0.7);
+  line-height: 1.2;
+  
+  // Responsive sizing
+  @media (max-width: 640px) {
+    font-size: 0.5625rem; // Reduced from 0.625rem
+  }
+  
+  @media (min-width: 1024px) {
+    font-size: 0.6875rem; // Reduced from 0.75rem
+  }
+}
+
+.stat-trend {
+  position: absolute;
+  top: 0.5rem; // Reduced from 0.75rem
+  right: 0.5rem; // Reduced from 0.75rem
+  width: 0.375rem; // Reduced from 0.5rem
+  height: 0.375rem; // Reduced from 0.5rem
+  
+  @media (max-width: 640px) {
+    top: 0.375rem; // Reduced from 0.5rem
+    right: 0.375rem; // Reduced from 0.5rem
+    width: 0.3125rem; // Reduced from 0.375rem
+    height: 0.3125rem; // Reduced from 0.375rem
+  }
+  
+  @media (min-width: 1024px) {
+    top: 0.75rem; // Reduced from 1rem
+    right: 0.75rem; // Reduced from 1rem
+    width: 0.5rem; // Reduced from 0.625rem
+    height: 0.5rem; // Reduced from 0.625rem
+  }
+}
+
+.trend-dot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  
+  .stat-trend.positive & {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.4); // Reduced from 8px
+    animation: pulse-positive 2s infinite;
+  }
+  
+  .stat-trend.negative & {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.4); // Reduced from 8px
+    animation: pulse-negative 2s infinite;
+  }
+  
+  .stat-trend.neutral & {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    box-shadow: 0 0 6px rgba(107, 114, 128, 0.4); // Reduced from 8px
+    animation: pulse-neutral 2s infinite;
+  }
+}
+
+// Chart container responsive height - optimized for compact stats
+.chart-container-responsive {
+  min-height: 220px; // Increased from 180px
+  max-height: calc(100vh - 250px); // Adjusted from 280px
+  
+  // @media (max-width: 640px) {
+  //   min-height: 180px; // Increased from 150px
+  //   max-height: calc(100vh - 200px); // Adjusted from 220px
+  // }
+  
+  // @media (min-width: 768px) {
+  //   min-height: 240px; // Increased from 200px
+  //   max-height: calc(100vh - 280px); // Adjusted from 320px
+  // }
+  
+  // @media (min-width: 1024px) {
+  //   min-height: 260px; // Increased from 220px
+  //   max-height: calc(100vh - 320px); // Adjusted from 380px
+  // }
+  
+  canvas {
+    max-height: 100% !important;
+    height: 100% !important;
+  }
+}
+
+// Animations
+@keyframes pulse-positive {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes pulse-negative {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes pulse-neutral {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+// Loading state improvements
+.responsive-stats-container + .flex-1 {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}

@@ -1,0 +1,35 @@
+// Ultra-Modern KPI Widget Styles - Notion/Linear Style
+// Premium glass morphism design with responsive stats
+
+// Premium KPI Widget Container
+.premium-kpi-widget {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  &:hover {
+    transform: translateY(-2px) scale(1.01);
+    
+    .kpi-value-animated {
+      transform: scale(1.05);
+      text-shadow: 0 8px 32px rgba(16, 185, 129, 0.3);
+    }
+  }
+}
+
+
+
+// Premium KPI Value Animation - Compact Size
+.kpi-value-animated {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-shadow: 0 2px 16px rgba(16, 185, 129, 0.15);
+  line-height: 1.1;
+}
+
+

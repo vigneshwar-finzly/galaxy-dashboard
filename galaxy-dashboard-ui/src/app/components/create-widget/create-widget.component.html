@@ -1,0 +1,543 @@
+<div class="min-h-screen theme-background font-inter">
+  <!-- Premium Header -->
+  <div class="sticky top-3 z-50 theme-surface-backdrop border-b theme-border shadow-sm" style="margin-left: 30px; margin-right: 30px; margin-bottom: 32px; border-radius: 12px;">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 theme-primary-gradient rounded-lg flex items-center justify-center shadow-md">
+            <i class="fas fa-puzzle-piece icons text-sm"></i>
+          </div>
+          <div>
+            <h1 class="text-xl font-semibold theme-text-primary">Widget Builder</h1>
+            <p class="theme-text-secondary text-sm">Design and preview a modern widget with rich interactions</p>
+          </div>
+        </div>
+        <div class="theme-text-secondary text-sm">Step {{ stepIndex + 1 }} of {{ steps.length }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Horizontal Stepper -->
+  <div class="cw-stepper">
+    <div class="step"
+         *ngFor="let s of steps; let i = index"
+         [class.active]="i === stepIndex"
+         [class.completed]="i < stepIndex"
+         role="button"
+         tabindex="0"
+         (click)="goToStep(i)"
+         (keyup.enter)="goToStep(i)">
+      <div class="circle">{{ i + 1 }}</div>
+      <div class="label">{{ s.label }}</div>
+    </div>
+  </div>
+
+  <div class="cw-layout">
+    <!-- Main step content -->
+    <main class="cw-content">
+      <ng-container [ngSwitch]="stepIndex">
+        <!-- Step 0: Data Source -->
+        <section *ngSwitchCase="0">
+          <div class="section-header">
+            <h3>Select Data Source</h3>
+            <p>Choose one source to power your widget.</p>
+        </div>
+
+          <div class="grid auto-fit">
+            <div class="option-card"
+                 *ngFor="let source of dataSources"
+                 role="button"
+                 tabindex="0"
+                 (click)="selectDataSource(source)"
+                 (keyup.enter)="selectDataSource(source)"
+                 [class.selected]="selectedDataSource === source">
+              <div class="option-icon">
+                <i [class]="getDataSourceIcon(source)"></i>
+              </div>
+              <div class="option-info">
+                  <h4>{{ source.name }}</h4>
+                  <p>{{ source.description }}</p>
+                </div>
+              <i class="check fas fa-check" *ngIf="selectedDataSource === source"></i>
+              </div>
+            </div>
+          </section>
+
+          <!-- Step 1: Chart Type -->
+        <section *ngSwitchCase="1">
+          <div class="section-header">
+            <h3>Choose Chart Type</h3>
+            <p>Select a visualization that fits your data.</p>
+            </div>
+
+          <div class="grid auto-fit">
+            <div class="option-card"
+                   *ngFor="let chart of chartTypes"
+                   role="button"
+                   tabindex="0"
+                   (click)="selectChart(chart)"
+                   (keyup.enter)="selectChart(chart)"
+                   [class.selected]="selectedChartType === chart">
+              <div class="option-icon">
+                <i [class]="getChartIcon(chart)"></i>
+                  </div>
+              <div class="option-info">
+                <h4>{{ chart.title }}</h4>
+                <p>{{ chart.description }}</p>
+                </div>
+              <i class="check fas fa-check" *ngIf="selectedChartType === chart"></i>
+              </div>
+            </div>
+          </section>
+
+        <!-- Step 2: Fields (compact small tiles) -->
+        <section *ngSwitchCase="2">
+          <div class="section-header">
+            <h3>Configure Fields</h3>
+            <p>Map fields based on the selected chart type.</p>
+            </div>
+
+            <!-- Table Fields -->
+            <div class="field-section" *ngIf="selectedChartType?.rules?.type === 'table'">
+              <div class="section-subheader">
+                <h4>Select Table Fields (Up to 8)</h4>
+                <span class="count">{{ getSelectedFieldsCount() }}/8</span>
+              </div>
+              <div class="grid fields">
+                <div class="field-card"
+                     *ngFor="let field of availableFields"
+                     (click)="selectField(field, 'tableFields')"
+                     [class.selected]="isFieldSelected(field, 'tableFields')">
+                  <div class="field-top">
+                    <h4>{{ field.name }}</h4>
+                  <i class="type" [ngClass]="{
+                      'fas fa-calendar': field.type === 'date',
+                      'fas fa-calculator': field.type === 'numeric',
+                      'fas fa-font': field.type !== 'date' && field.type !== 'numeric'
+                    }"></i>
+                  </div>
+                  <div class="badge">{{ field.type }}</div>
+                </div>
+              </div>
+            </div>
+
+          <!-- Bar/Line/Area: small tiles for X and Y axis -->
+            <div class="field-section" *ngIf="selectedChartType?.rules?.type === 'bar' || selectedChartType?.rules?.type === 'line' || selectedChartType?.rules?.type === 'area'">
+              <div class="axis-group">
+                <h4>X-Axis (Category/Time)</h4>
+                <div class="grid fields">
+                  <div class="field-card"
+                       *ngFor="let field of availableFields"
+                       role="button"
+                       tabindex="0"
+                       (click)="selectField(field, 'xAxis')"
+                       (keyup.enter)="selectField(field, 'xAxis')"
+                       [class.selected]="isFieldSelected(field, 'xAxis')">
+                    <div class="field-top">
+                      <h4>{{ field.name }}</h4>
+                    <i class="type" [ngClass]="{
+                        'fas fa-calendar': field.type === 'date',
+                        'fas fa-calculator': field.type === 'numeric',
+                        'fas fa-font': field.type !== 'date' && field.type !== 'numeric'
+                      }"></i>
+                    </div>
+                    <div class="badge">{{ field.type }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="axis-group">
+                <h4>Y-Axis (Value)</h4>
+                <div class="grid fields">
+                  <div class="field-card"
+                       *ngFor="let field of numericFields"
+                       role="button"
+                       tabindex="0"
+                       (click)="selectField(field, 'yAxis')"
+                       (keyup.enter)="selectField(field, 'yAxis')"
+                       [class.selected]="isFieldSelected(field, 'yAxis')">
+                    <div class="field-top">
+                      <h4>{{ field.name }}</h4>
+                    <i class="type fas fa-calculator"></i>
+                    </div>
+                    <div class="badge">{{ field.type }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          <!-- Pie/Donut: Group field -->
+            <div class="field-section" *ngIf="selectedChartType?.rules?.type === 'pie' || selectedChartType?.rules?.type === 'donut'">
+              <div class="section-subheader">
+                <h4>Select Group Field</h4>
+                <p>Choose a field to group your data by</p>
+              </div>
+              <div class="grid fields">
+                <div class="field-card"
+                     *ngFor="let field of groupFields"
+                     role="button"
+                     tabindex="0"
+                     (click)="selectField(field, 'groupField')"
+                     (keyup.enter)="selectField(field, 'groupField')"
+                     [class.selected]="isFieldSelected(field, 'groupField')">
+                  <div class="field-top">
+                    <h4>{{ field.name }}</h4>
+                  <i class="type fas fa-layer-group"></i>
+                  </div>
+                  <div class="badge">Group</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Aggregated Table -->
+            <div class="field-section" *ngIf="selectedChartType?.rules?.type === 'aggregated_table'">
+              <div class="section-subheader">
+                <h4>Select Table Fields (Up to {{ getMaxFieldsForChartType() }})</h4>
+                <span class="count">{{ getSelectedFieldsCount() }}/{{ getMaxFieldsForChartType() }}</span>
+              </div>
+              <div class="grid fields">
+                <div class="field-card"
+                     *ngFor="let field of availableFields"
+                     role="button"
+                     tabindex="0"
+                     (click)="selectField(field, 'tableFields')"
+                     (keyup.enter)="selectField(field, 'tableFields')"
+                     [class.selected]="isFieldSelected(field, 'tableFields')">
+                  <div class="field-top">
+                    <h4>{{ field.name }}</h4>
+                  <i class="type" [ngClass]="{
+                      'fas fa-calendar': field.type === 'date',
+                      'fas fa-calculator': field.type === 'numeric',
+                      'fas fa-font': field.type !== 'date' && field.type !== 'numeric'
+                    }"></i>
+                  </div>
+                  <div class="badge">{{ field.type }}</div>
+                </div>
+              </div>
+
+              <div class="section-subheader small">
+                <h4>Select Group Field</h4>
+                <p>Choose a field to group your aggregated data by</p>
+              </div>
+              <div class="grid fields">
+                <div class="field-card"
+                     *ngFor="let field of groupFields"
+                     role="button"
+                     tabindex="0"
+                     (click)="selectField(field, 'groupField')"
+                     (keyup.enter)="selectField(field, 'groupField')"
+                     [class.selected]="isFieldSelected(field, 'groupField')">
+                  <div class="field-top">
+                    <h4>{{ field.name }}</h4>
+                  <i class="type fas fa-layer-group"></i>
+                  </div>
+                  <div class="badge">Group</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Count Widget -->
+            <div class="field-section" *ngIf="selectedChartType?.rules?.type === 'count'">
+              <div class="section-subheader">
+                <h4>Select Field to Count</h4>
+                <p>Choose a field to count or sum</p>
+              </div>
+              <div class="grid fields">
+                <div class="field-card"
+                     *ngFor="let field of availableFields"
+                     role="button"
+                     tabindex="0"
+                     (click)="selectField(field, 'countField')"
+                     (keyup.enter)="selectField(field, 'countField')"
+                     [class.selected]="isFieldSelected(field, 'countField')">
+                  <div class="field-top">
+                    <h4>{{ field.name }}</h4>
+                  <i class="type" [ngClass]="{
+                      'fas fa-calendar': field.type === 'date',
+                      'fas fa-calculator': field.type === 'numeric',
+                      'fas fa-font': field.type !== 'date' && field.type !== 'numeric'
+                    }"></i>
+                  </div>
+                  <div class="badge">{{ field.type }}</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        <!-- Step 3: Filters (compact) -->
+        <section *ngSwitchCase="3">
+          <div class="section-header">
+            <h3>Add Filters</h3>
+            <p>Make your widget more focused with optional filters.</p>
+            </div>
+
+          <div class="filters-toolbar">
+            <h4>Data Filters</h4>
+            <button class="icon-btn" type="button" (click)="addFilter()"><i class="fas fa-plus"></i></button>
+            </div>
+
+          <div class="filter-list" *ngIf="selectedFilters.length > 0">
+            <div class="filter-item" *ngFor="let filter of selectedFilters; let i = index">
+              <div class="row">
+                <div class="fi">
+                    <label>Field</label>
+                  <select [(ngModel)]="filter.field">
+                      <option [ngValue]="null">Select field</option>
+                      <option *ngFor="let f of filterFields" [ngValue]="f">{{ f.name }}</option>
+                    </select>
+                  </div>
+                <div class="fi" *ngIf="filter.field">
+                    <label>Condition</label>
+                  <select [(ngModel)]="filter.condition">
+                      <option [ngValue]="null">Select</option>
+                      <option *ngFor="let c of filter.field.conditions" [ngValue]="c">{{ c }}</option>
+                    </select>
+                  </div>
+                <div class="fi" *ngIf="filter.field && filter.condition">
+                    <label>Value</label>
+                    <ng-container [ngSwitch]="filter.field.type">
+                    <select *ngSwitchCase="'dropdown'" [(ngModel)]="filter.value">
+                        <option [ngValue]="null">Select value</option>
+                        <option *ngFor="let opt of filter.field.options" [ngValue]="opt">{{ opt }}</option>
+                      </select>
+                    <input *ngSwitchCase="'date'" type="date" [(ngModel)]="filter.value" />
+                    <input *ngSwitchDefault type="text" [(ngModel)]="filter.value" placeholder="Enter value" />
+                    </ng-container>
+                  </div>
+                <div class="fi" style="align-items:flex-end;">
+                  <button class="icon-btn" (click)="removeFilter(i)" title="Remove"><i class="fas fa-times"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          <div class="empty" *ngIf="selectedFilters.length === 0">
+            <i class="fas fa-filter"></i>
+            <div>No filters added yet. Click + to add one.</div>
+            </div>
+          </section>
+
+          <!-- Step 4: Preview -->
+        <section *ngSwitchCase="4">
+          <div class="section-header">
+            <h3>Preview</h3>
+            <p>Review your configuration and see a live preview of your widget.</p>
+              </div>
+
+          <div class="preview">
+            <div class="preview-chart" style="min-height: 300px; background: var(--color-surface-primary); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+              <!-- Loading spinner -->
+              <div *ngIf="isLoadingPreview" class="preview-loading" style="display: flex; align-items: center; justify-content: center; height: 268px;">
+                <div class="spinner" style="width: 32px; height: 32px; border: 3px solid var(--color-border); border-top: 3px solid var(--color-primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <span style="margin-left: 12px; color: var(--color-text-secondary);">Generating preview...</span>
+              </div>
+              
+              <!-- Chart preview with individual components -->
+              <div *ngIf="!isLoadingPreview && previewData" class="chart-container" style="height: 268px;">
+                <!-- KPI Card -->
+                <app-kpi-card
+                  *ngIf="getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'kpi-card'"
+                  [data]="previewData">
+                </app-kpi-card>
+                
+                <!-- Line Chart -->
+                <app-line-chart
+                  *ngIf="getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'line-chart'"
+                  [data]="previewData"
+                  [title]="previewData?.title">
+                </app-line-chart>
+                
+                <!-- Bar Chart -->
+                <app-bar-chart
+                  *ngIf="getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'bar-chart'"
+                  [data]="previewData"
+                  [title]="previewData?.title">
+                </app-bar-chart>
+                
+                <!-- Pie Chart -->
+                <app-pie-chart
+                  *ngIf="getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'pie-chart'"
+                  [data]="previewData"
+                  [title]="previewData?.title">
+                </app-pie-chart>
+                
+                <!-- Doughnut Chart -->
+                <app-doughnut-chart
+                  *ngIf="getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'doughnut-chart'"
+                  [data]="previewData"
+                  [title]="previewData?.title">
+                </app-doughnut-chart>
+                
+                <!-- Area Chart -->
+                <app-area-chart
+                  *ngIf="getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'area-chart'"
+                  [data]="previewData"
+                  [title]="previewData?.title">
+                </app-area-chart>
+                
+                <!-- Horizontal Bar Chart -->
+                <app-horizontal-bar-chart
+                  *ngIf="getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'horizontal-bar-chart'"
+                  [data]="previewData"
+                  [title]="previewData?.title">
+                </app-horizontal-bar-chart>
+                
+                <!-- Radar Chart -->
+                <app-radar-chart
+                  *ngIf="getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'radar-chart'"
+                  [data]="previewData"
+                  [title]="previewData?.title">
+                </app-radar-chart>
+                
+                <!-- Data Table -->
+                <app-data-table
+                  *ngIf="getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'data-table'"
+                  [data]="previewData">
+                </app-data-table>
+                
+                <!-- Fallback to chart-widget for unsupported types -->
+                <app-chart-widget
+                  *ngIf="!getComponentTypeFromChartType(selectedChartType?.rules?.type) || getComponentTypeFromChartType(selectedChartType?.rules?.type) === 'chart-widget'"
+                  [data]="previewData">
+                </app-chart-widget>
+              </div>
+              
+              <!-- No preview placeholder -->
+              <div *ngIf="!isLoadingPreview && !previewData" class="preview-placeholder" style="display: flex; align-items: center; justify-content: center; height: 268px; color: var(--color-text-secondary);">
+                <div style="text-align: center;">
+                  <i class="fas fa-chart-bar" style="font-size: 48px; margin-bottom: 12px; opacity: 0.5;"></i>
+                  <div>Preview will appear here</div>
+                  <small>Navigate to this step to generate preview</small>
+                </div>
+              </div>
+            </div>
+            
+            <!-- <div class="config">
+              <div class="row"><span>Data Source</span> <strong>{{ selectedDataSource?.name || 'Not selected' }}</strong></div>
+              <div class="row"><span>Chart Type</span> <strong>{{ selectedChartType?.title || 'Not selected' }}</strong></div>
+              <div class="row" *ngIf="selectedChartType?.rules?.type === 'table' || selectedChartType?.rules?.type === 'aggregated_table'"><span>Table Fields</span> <strong>{{ getSelectedFieldsCount() }} selected</strong></div>
+              <div class="row" *ngIf="selectedChartType?.rules?.type === 'bar' || selectedChartType?.rules?.type === 'line' || selectedChartType?.rules?.type === 'area'"><span>X-Axis</span> <strong>{{ selectedFields.xAxis?.name || 'Not selected' }}</strong></div>
+              <div class="row" *ngIf="selectedChartType?.rules?.type === 'bar' || selectedChartType?.rules?.type === 'line' || selectedChartType?.rules?.type === 'area'"><span>Y-Axis</span> <strong>{{ selectedFields.yAxis?.name || 'Not selected' }}</strong></div>
+              <div class="row" *ngIf="selectedChartType?.rules?.type === 'pie' || selectedChartType?.rules?.type === 'donut'"><span>Group Field</span> <strong>{{ selectedFields.groupField?.name || 'Not selected' }}</strong></div>
+              <div class="row" *ngIf="selectedChartType?.rules?.type === 'count'"><span>Count Field</span> <strong>{{ selectedFields.countField?.name || 'Not selected' }}</strong></div>
+              <div class="row"><span>Filters</span> <strong>{{ selectedFilters.length }} applied</strong></div>
+              
+              <div style="margin-top: 16px; text-align: center;">
+                <button type="button" class="btn ghost" (click)="generatePreviewData()" [disabled]="isLoadingPreview">
+                  <i class="fas fa-refresh" [class.fa-spin]="isLoadingPreview"></i>
+                  {{ isLoadingPreview ? 'Generating...' : 'Refresh Preview' }}
+                </button>
+              </div>
+              </div> -->
+            </div>
+          </section>
+
+          <!-- Step 5: Save -->
+        <section *ngSwitchCase="5">
+          <div class="section-header">
+            <h3>Save Widget</h3>
+            <p>Give your widget a name and description.</p>
+              </div>
+
+          <div class="form">
+            <div class="fi">
+              <label>Widget Name <span class="sr-only">required</span></label>
+              <input type="text" [(ngModel)]="widgetName" placeholder="Enter a descriptive name" />
+            </div>
+            <div class="fi">
+                <label>Description</label>
+              <textarea rows="3" [(ngModel)]="widgetDescription" placeholder="Optional description"></textarea>
+            </div>
+              </div>
+
+          <div class="mini-summary">
+            <h4>Widget Summary</h4>
+            <div class="row"><span>Data Source</span> <strong>{{ selectedDataSource?.name || 'Not selected' }}</strong></div>
+            <div class="row"><span>Chart Type</span> <strong>{{ selectedChartType?.title || 'Not selected' }}</strong></div>
+            <div class="row"><span>Fields</span> <strong>{{ getSelectedFieldsCount() }} selected</strong></div>
+            <div class="row"><span>Filters</span> <strong>{{ selectedFilters.length }} applied</strong></div>
+            </div>
+          </section>
+        </ng-container>
+
+      <!-- Footer navigation -->
+      <div class="cw-footer">
+        <button class="btn ghost" type="button" (click)="prev()" [disabled]="stepIndex === 0">
+          <i class="fas fa-arrow-left"></i>
+          Previous
+          </button>
+        <div class="spacer"></div>
+        <button *ngIf="stepIndex < steps.length - 1" class="btn primary" type="button" (click)="next()" [disabled]="!canProceed()">
+          Next
+          <i class="fas fa-arrow-right"></i>
+          </button>
+        <button *ngIf="stepIndex === steps.length - 1" class="btn primary" type="button" (click)="createWidget()" [disabled]="!canProceed()">
+          <i class="fas fa-save"></i>
+          Create Widget
+          </button>
+      </div>
+    </main>
+
+    <!-- Live sticky summary + AI summary -->
+    <aside class="cw-summary">
+      <div class="summary-card">
+        <div class="summary-header">
+          <i class="fas fa-list"></i>
+          <h4>Live Summary</h4>
+        </div>
+        <div class="summary-body">
+          <div class="item">
+            <span>Data Source</span>
+            <strong>{{ selectedDataSource?.name || '—' }}</strong>
+          </div>
+          <div class="item">
+            <span>Chart Type</span>
+            <strong>{{ selectedChartType?.title || '—' }}</strong>
+          </div>
+          <div class="item" *ngIf="selectedChartType?.rules?.type === 'bar' || selectedChartType?.rules?.type === 'line' || selectedChartType?.rules?.type === 'area'">
+            <span>X / Y Axis</span>
+            <div>
+              <div class="chips">
+                <span class="chip" *ngIf="selectedFields.xAxis">X: {{ selectedFields.xAxis.name }}</span>
+                <span class="chip" *ngIf="selectedFields.yAxis">Y: {{ selectedFields.yAxis.name }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="item" *ngIf="selectedChartType?.rules?.type === 'pie' || selectedChartType?.rules?.type === 'donut'">
+            <span>Group Field</span>
+            <strong>{{ selectedFields.groupField?.name || '—' }}</strong>
+          </div>
+          <div class="item" *ngIf="selectedChartType?.rules?.type === 'table' || selectedChartType?.rules?.type === 'aggregated_table'">
+            <span>Table Fields</span>
+            <div class="chips">
+              <span class="chip" *ngFor="let f of (selectedFields.tableFields || [])">{{ f.name }}</span>
+            </div>
+          </div>
+          <div class="item" *ngIf="selectedChartType?.rules?.type === 'count'">
+            <span>Count Field</span>
+            <strong>{{ selectedFields.countField?.name || '—' }}</strong>
+          </div>
+          <div class="item">
+            <span>Filters</span>
+            <div class="chips" *ngIf="selectedFilters.length > 0; else noFilters">
+              <span class="chip" *ngFor="let fl of selectedFilters">
+                {{ fl.field?.name || 'Field' }} {{ fl.condition || '' }} {{ fl.value || '' }}
+              </span>
+            </div>
+            <ng-template #noFilters>—</ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-card ai">
+        <div class="summary-header">
+          <i class="fas fa-wand-magic-sparkles"></i>
+          <h4>Smart Summary</h4>
+        </div>
+        <div class="summary-body">
+          <p class="ai-text">{{ aiSummary }}</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

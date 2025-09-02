@@ -1,0 +1,120 @@
+<div class="dashboard-container bg-background-50 min-h-screen">
+  <div class="main-content transition-all duration-500 ease-in-out flex flex-col">
+    <div class="dashboard-content flex-1 p-4 lg:p-6 overflow-y-auto">
+
+
+      <!-- Loading State -->
+      <div *ngIf="isLoadingWidgets" class="loading-container flex items-center justify-center min-h-64 bg-white rounded-lg shadow-md">
+        <div class="text-center">
+          <div class="spinner-border animate-spin inline-block w-12 h-12 border-4 rounded-full border-blue-500 border-t-transparent mb-4"></div>
+          <p class="text-gray-600 text-lg">Loading dashboard widgets...</p>
+          <p class="text-gray-400 text-sm" *ngIf="currentDashboard">{{ currentDashboard.name }}</p>
+        </div>
+      </div>
+
+      <!-- Empty Dashboard State -->
+      <div *ngIf="!isLoadingWidgets && dashboard.length === 0" class="empty-dashboard flex items-center justify-center min-h-64 bg-white rounded-lg shadow-md">
+        <div class="text-center">
+          <div class="w-20 h-20 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-chart-bar text-3xl text-gray-400"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">No widgets in this dashboard</h3>
+          <p class="text-gray-600 mb-4" *ngIf="currentDashboard">{{ currentDashboard.name }} is empty</p>
+          <p class="text-gray-500 text-sm">Add some widgets to get started with your dashboard</p>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid with Modern Styling -->
+      <div *ngIf="!isLoadingWidgets && dashboard.length > 0" class="dashboard-grid-container">
+        <gridster [options]="options" class="dashboard-grid">
+          <gridster-item [item]="item" *ngFor="let item of dashboard">
+            <div class="widget-container h-full card-elegant hover-scale drag-handle group relative">
+              <!-- Universal Widget Controls -->
+              <div class="absolute -top-2 -right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex space-x-1">
+                <!-- Edit Widget Button -->
+                <button 
+                  (click)="editWidgetFromDashboard(item['data']?.widgetId)"
+                  class="w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center hover:scale-110 border-2 border-white"
+                  title="Edit Widget"
+                  *ngIf="item['data']?.widgetId">
+                  <i class="fas fa-edit text-sm"></i>
+                </button>
+                
+                <!-- Remove Widget Button -->
+                <button 
+                  (click)="removeWidgetFromDashboard(item['data']?.dashboardWidgetId)"
+                  class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center hover:scale-110 border-2 border-white"
+                  title="Remove Widget"
+                  *ngIf="item['data']?.dashboardWidgetId">
+                  <i class="fas fa-times text-sm"></i>
+                </button>
+              </div>
+              
+              <!-- Individual chart components for each widget type -->
+              <app-kpi-card
+                *ngIf="item['component'] === 'kpi-card'"
+                [data]="item['data']"
+                (widgetRemoved)="handleWidgetRemoval($event)">
+              </app-kpi-card>
+              
+              <app-line-chart
+                *ngIf="item['component'] === 'line-chart'"
+                [data]="item['data']"
+                [title]="item['data']?.title"
+                (widgetRemoved)="handleWidgetRemoval($event)">
+              </app-line-chart>
+              
+              <app-bar-chart
+                *ngIf="item['component'] === 'bar-chart'"
+                [data]="item['data']"
+                [title]="item['data']?.title"
+                (widgetRemoved)="handleWidgetRemoval($event)">
+              </app-bar-chart>
+              
+              <app-pie-chart
+                *ngIf="item['component'] === 'pie-chart'"
+                [data]="item['data']"
+                [title]="item['data']?.title"
+                (widgetRemoved)="handleWidgetRemoval($event)">
+              </app-pie-chart>
+              
+              <app-doughnut-chart
+                *ngIf="item['component'] === 'doughnut-chart'"
+                [data]="item['data']"
+                [title]="item['data']?.title"
+                (widgetRemoved)="handleWidgetRemoval($event)">
+              </app-doughnut-chart>
+              
+              <app-area-chart
+                *ngIf="item['component'] === 'area-chart'"
+                [data]="item['data']"
+                [title]="item['data']?.title"
+                (widgetRemoved)="handleWidgetRemoval($event)">
+              </app-area-chart>
+              
+              <app-radar-chart
+                *ngIf="item['component'] === 'radar-chart'"
+                [data]="item['data']"
+                [title]="item['data']?.title"
+                (widgetRemoved)="handleWidgetRemoval($event)">
+              </app-radar-chart>
+              
+              <app-horizontal-bar-chart
+                *ngIf="item['component'] === 'horizontal-bar-chart'"
+                [data]="item['data']"
+                [title]="item['data']?.title"
+                (widgetRemoved)="handleWidgetRemoval($event)">
+              </app-horizontal-bar-chart>
+              
+              <app-data-table
+                *ngIf="item['component'] === 'data-table'"
+                [data]="item['data']"
+                (widgetRemoved)="handleWidgetRemoval($event)">
+              </app-data-table>
+            </div>
+          </gridster-item>
+        </gridster>
+      </div>
+    </div>
+  </div>
+</div>
